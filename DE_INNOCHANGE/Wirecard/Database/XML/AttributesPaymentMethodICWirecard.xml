@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+Shop System Plugins - Terms of use
+This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
+(subsequently referred to as WDCEE) and it's contractual partners (subsequently referred
+to as customer or customers) which are related to the use of plugins provided by WDCEE.
+The Plugin is provided by WDCEE free of charge for it's customers and must be used for
+the purpose of WDCEE's payment platform integration only. It explicitly is not part of
+the general contract between WDCEE and it's customer. The plugin has successfully been
+tested under specific circumstances which are defined as the shopsystem's standard
+configuration (vendor's delivery state). The Customer is responsible for testing the
+plugin's functionality before putting it into production enviroment. The customer uses the
+plugin at own risk. WDCEE does not guarantee it's full functionality neither does WDCEE
+assume liability for any disadvantage related to the use of this plugin. By installing the
+plugin into the shopsystem the customer agrees to the terms of use. Please do not use this
+plugin if you do not agree to the terms of use!
+-->
+<epages>
+  <Object reference="1" Path="/Classes">
+    <Class Alias="PaymentMethodICWirecard" Base="ContainerPaymentMethod" Package="DE_INNOCHANGE::Wirecard::API::Object::PaymentMethodICWirecard" delete="1" >
+      <AttributeValue Name="ExportLevel" Value="1" />
+      <Object Alias="Attributes">
+        <Attribute Alias="customerId"            Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="shopId"                Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="secret"                Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="paymentType"           Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="OrderStatusAuthorized" Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="OrderStatusSettled"    Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="sendAddressData"       Type="Boolean" IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="displayType"           Type="Integer" IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+      </Object>
+    </Class>
+  </Object>
+</epages>

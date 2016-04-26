@@ -1,0 +1,74 @@
+#REM
+Shop System Plugins - Terms of use
+This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
+(subsequently referred to as WDCEE) and it's contractual partners (subsequently referred
+to as customer or customers) which are related to the use of plugins provided by WDCEE.
+The Plugin is provided by WDCEE free of charge for it's customers and must be used for
+the purpose of WDCEE's payment platform integration only. It explicitly is not part of
+the general contract between WDCEE and it's customer. The plugin has successfully been
+tested under specific circumstances which are defined as the shopsystem's standard
+configuration (vendor's delivery state). The Customer is responsible for testing the
+plugin's functionality before putting it into production enviroment. The customer uses the
+plugin at own risk. WDCEE does not guarantee it's full functionality neither does WDCEE
+assume liability for any disadvantage related to the use of this plugin. By installing the
+plugin into the shopsystem the customer agrees to the terms of use. Please do not use this
+plugin if you do not agree to the terms of use!
+#ENDREM
+<div class="Dialog">
+  #INCLUDE("INC-PagerHeader")
+  <table class="ContentList ep-js" data-js="ep.uiRichTable()" >
+    <thead>
+      <tr>
+    #LOCAL("InputOrderBy", #INPUT.OrderBy)#IF(NOT #DEFINED(#InputOrderBy))#SET("InputOrderBy", "")#ENDIF
+      #IF(#InputOrderBy NE "TransTime")
+        <td><a href="#Pager.URL&amp;OrderBy=TransTime" title="{SortColumn}"><strong>{Date}</strong><i class="Sprite list_ico_s_changeorder_unselected" title="{SortColumn}"></i></a></td>#ELSIF(#INPUT.OrderDesc)
+        <td><a href="#Pager.URL&amp;OrderBy=TransTime&amp;OrderDesc=0" title="{SortColumn}"><strong>{Date}</strong><i class="Sprite list_ico_s_changeorder_down" title="{SortColumn}"></i></a></td>#ELSE
+        <td><a href="#Pager.URL&amp;OrderBy=TransTime&amp;OrderDesc=1" title="{SortColumn}"><strong>{Date}</strong><i class="Sprite list_ico_s_changeorder_up" title="{SortColumn}"></i></a></td>#ENDIF
+      #IF(#InputOrderBy NE "LineItemContainer.Parent.Alias")
+        <td><a href="#Pager.URL&amp;OrderBy=LineItemContainer.Parent.Alias" title="{SortColumn}"><strong>{OrderAlias}</strong><i class="Sprite list_ico_s_changeorder_unselected" title="{SortColumn}"></i></a></td>#ELSIF(#INPUT.OrderDesc)
+        <td><a href="#Pager.URL&amp;OrderBy=LineItemContainer.Parent.Alias&amp;OrderDesc=0" title="{SortColumn}"><strong>{OrderAlias}</strong><i class="Sprite list_ico_s_changeorder_down" title="{SortColumn}"></i></a></td>#ELSE
+        <td><a href="#Pager.URL&amp;OrderBy=LineItemContainer.Parent.Alias&amp;OrderDesc=1" title="{SortColumn}"><strong>{OrderAlias}</strong><i class="Sprite list_ico_s_changeorder_up" title="{SortColumn}"></i></a></td>#ENDIF
+      #IF(#InputOrderBy NE "TransID")
+        <td><a href="#Pager.URL&amp;OrderBy=TransID" title="{SortColumn}"><strong>{TransID}</strong><i class="Sprite list_ico_s_changeorder_unselected" title="{SortColumn}"></i></a></td>#ELSIF(#INPUT.OrderDesc)
+        <td><a href="#Pager.URL&amp;OrderBy=TransID&amp;OrderDesc=0" title="{SortColumn}"><strong>{TransID}</strong><i class="Sprite list_ico_s_changeorder_down" title="{SortColumn}"></i></a></td>#ELSE
+        <td><a href="#Pager.URL&amp;OrderBy=TransID&amp;OrderDesc=1" title="{SortColumn}"><strong>{TransID}</strong><i class="Sprite list_ico_s_changeorder_up" title="{SortColumn}"></i></a></td>#ENDIF
+      #IF(#InputOrderBy NE "Amount")
+        <td><a href="#Pager.URL&amp;OrderBy=Amount" title="{SortColumn}"><strong>{Amount}</strong><i class="Sprite list_ico_s_changeorder_unselected" title="{SortColumn}"></i></a></td>#ELSIF(#INPUT.OrderDesc)
+        <td><a href="#Pager.URL&amp;OrderBy=Amount&amp;OrderDesc=0" title="{SortColumn}"><strong>{Amount}</strong><i class="Sprite list_ico_s_changeorder_down" title="{SortColumn}"></i></a></td>#ELSE
+        <td><a href="#Pager.URL&amp;OrderBy=Amount&amp;OrderDesc=1" title="{SortColumn}"><strong>{Amount}</strong><i class="Sprite list_ico_s_changeorder_up" title="{SortColumn}"></i></a></td>#ENDIF
+      #IF(#InputOrderBy NE "TransStatus")
+        <td><a href="#Pager.URL&amp;OrderBy=TransStatus" title="{SortColumn}"><strong>{Status}</strong><i class="Sprite list_ico_s_changeorder_unselected" title="{SortColumn}"></i></a></td>#ELSIF(#INPUT.OrderDesc)
+        <td><a href="#Pager.URL&amp;OrderBy=TransStatus&amp;OrderDesc=0" title="{SortColumn}"><strong>{Status}</strong><i class="Sprite list_ico_s_changeorder_down" title="{SortColumn}"></i></a></td>#ELSE
+        <td><a href="#Pager.URL&amp;OrderBy=TransStatus&amp;OrderDesc=1" title="{SortColumn}"><strong>{Status}</strong><i class="Sprite list_ico_s_changeorder_up" title="{SortColumn}"></i></a></td>#ENDIF
+    #ENDLOCAL
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+        <td colspan="5"><div class="Pager">#INCLUDE("Pager")</div></td>
+      </tr>
+    </tfoot>
+    <tbody>
+    #LOOP(#Pager.Items)
+      <tr#IF(#ItemNo % 2) class="alternate"#ENDIF>
+        <td>#INCLUDE("INC-OrderTime")</td>
+        <td>#INCLUDE("INC-LinkToOrder")</td>
+        <td>
+          #TransID
+        </td>
+        <td class="AlignRight">#Amount[money]</td>
+        <td>
+             #IF(#TransStatus EQ "authorized"){Authorized}
+          #ELSIF(#TransStatus EQ "settled"){Captured}
+          #ENDIF
+        </td>
+      </tr>
+    #ENDLOOP
+    #IF(#COUNT(#Pager.Items) == 0)
+      <tr>
+        <td colspan="5" class="AlignMiddle">{NoMatches}</td>
+      </tr>
+    #ENDIF
+    </tbody>
+  </table>
+</div>

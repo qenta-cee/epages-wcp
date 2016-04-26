@@ -1,0 +1,65 @@
+#REM
+Shop System Plugins - Terms of use
+This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
+(subsequently referred to as WDCEE) and it's contractual partners (subsequently referred
+to as customer or customers) which are related to the use of plugins provided by WDCEE.
+The Plugin is provided by WDCEE free of charge for it's customers and must be used for
+the purpose of WDCEE's payment platform integration only. It explicitly is not part of
+the general contract between WDCEE and it's customer. The plugin has successfully been
+tested under specific circumstances which are defined as the shopsystem's standard
+configuration (vendor's delivery state). The Customer is responsible for testing the
+plugin's functionality before putting it into production enviroment. The customer uses the
+plugin at own risk. WDCEE does not guarantee it's full functionality neither does WDCEE
+assume liability for any disadvantage related to the use of this plugin. By installing the
+plugin into the shopsystem the customer agrees to the terms of use. Please do not use this
+plugin if you do not agree to the terms of use!
+#ENDREM
+<script type="text/javascript" id="SearchBarContainer">
+  dojo.require("epages.cartridges.de_epages.presentation.SearchBar");
+  dojo.addOnLoad(function() {
+    epages.cartridges.de_epages.presentation.SearchBar.createSearchBar("SearchICWirecardTransactions", true,
+      {
+        viewAction: "MBO-SearchICWirecardTransactions",
+        objectId: "#Shop.ID"
+      },
+      {
+        searchButtonTitle: "{StartSearch}"
+      },
+      {
+        primary: [
+          {label:"{TransID}", name:"TransIDString", type:"text", #IF(#FormError_TransIDString)cssClass:"DialogError",#ENDIF
+            defaultValue:"#IF(#INPUT.TransIDString)#INPUT.TransIDString#ENDIF"},
+          {label:"{Status}", name:"TransStatus", type:"select", #IF(#FormError_TransStatus)cssClass:"DialogError",#ENDIF
+            options:[
+              {label:"{AllEntries}",
+                value:""
+              },
+              {label:"{Authorized}",
+                value:"authorized"
+                #IF(#DEFINED(#INPUT.TransStatus) AND #INPUT.TransStatus EQ "A"), selected:true#ENDIF
+              },
+              {label:"{Captured}",
+                value:"settled"
+                #IF(#DEFINED(#INPUT.TransStatus) AND #INPUT.TransStatus EQ "C"), selected:true#ENDIF
+              },
+            ]
+          },
+          {type:"startgroup", cssClass:"DateContainerGroup"},
+            {label:"{TimeFrame}", name:"TransTimeFrom", type:"date",
+              defaultValue:"#IF(#INPUT.TransTimeFrom)#INPUT.TransTimeFrom#ENDIF"},
+            {label:"-", name:"TransTimeTo", type:"date",
+              defaultValue:"#IF(#INPUT.TransTimeTo)#INPUT.TransTimeTo#ENDIF"},
+          {type:"endgroup"}
+        ],
+        secondary: [
+        ],
+        hidden: [
+          {name:"OrderBy", value:"TransTime"},
+          {name:"OrderDesc", value:"1"},
+          {name:"ErrorAction", value:"MBO-ViewICWirecardTransactions"},
+          {name:"Search", value:"Transactions"}
+        ]
+      }
+    );
+  });
+</script>

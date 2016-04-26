@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Shop System Plugins - Terms of use
+This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
+(subsequently referred to as WDCEE) and it's contractual partners (subsequently referred
+to as customer or customers) which are related to the use of plugins provided by WDCEE.
+The Plugin is provided by WDCEE free of charge for it's customers and must be used for
+the purpose of WDCEE's payment platform integration only. It explicitly is not part of
+the general contract between WDCEE and it's customer. The plugin has successfully been
+tested under specific circumstances which are defined as the shopsystem's standard
+configuration (vendor's delivery state). The Customer is responsible for testing the
+plugin's functionality before putting it into production enviroment. The customer uses the
+plugin at own risk. WDCEE does not guarantee it's full functionality neither does WDCEE
+assume liability for any disadvantage related to the use of this plugin. By installing the
+plugin into the shopsystem the customer agrees to the terms of use. Please do not use this
+plugin if you do not agree to the terms of use!
+-->
+<epages>
+  <Class reference="1" Path="/Classes/LineItemPaymentICWirecard">
+    <Object Alias="SearchDefinitions" delete="1">
+      <SearchFrom TableShortCut="li" TableName="lineitempaymentexternal" PrimaryKey="lineitempaymentexternalid" IsMaster="1" />
+      <SearchDefinition MaxResults="100" DBDriver="SQL" SearchName="Transactions"
+        FromPart="
+          from lineitempaymentexternal li
+          inner join object lio on li.lineitempaymentexternalid = lio.objectid
+          inner join object co  on co.objectid = lio.classid
+          inner join object lc  on lc.objectid = lio.parentid
+          inner join object o   on o.objectid = lc.parentid
+          inner join object p   on p.objectid = o.parentid
+        "
+        WherePart="co.alias='LineItemPaymentICWirecard' and li.transstatus is not null and p.alias = 'Orders'"
+        >
+        <SearchParameter Position="10" Parameter="Shop.ID"       DefaultOperator="="     WherePart="lio.siteid = #Shop.ID" />
+        <SearchParameter Position="20" Parameter="TransIDString" DefaultOperator="like"  WherePart="li.transid like #TransIDString" />
+        <SearchParameter Position="30" Parameter="TransStatus"   DefaultOperator="="     WherePart="li.transstatus = #TransStatus" />
+        <SearchParameter Position="40" Parameter="TransTimeFrom" DefaultOperator="&gt;=" WherePart="li.transtime &gt;= #TransTimeFrom" />
+        <SearchParameter Position="50" Parameter="TransTimeTo"   DefaultOperator="&lt;=" WherePart="li.transtime &lt;= #TransTimeTo" />
+
+        <SearchSort Parameter="TransID"                        OrderByPart="li.transid" />
+        <SearchSort Parameter="TransTime"                      OrderByPart="li.transtime" />
+        <SearchSort Parameter="TransStatus"                    OrderByPart="li.transstatus" />
+        <SearchSort Parameter="Amount"                         OrderByPart="li.amount" />
+        <SearchSort Parameter="LineItemContainer.Parent.Alias" OrderByPart="o.alias" />
+      </SearchDefinition>
+    </Object>
+  </Class>
+</epages>

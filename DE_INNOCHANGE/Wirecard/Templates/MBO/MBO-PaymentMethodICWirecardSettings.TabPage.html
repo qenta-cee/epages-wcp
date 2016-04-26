@@ -1,0 +1,155 @@
+#REM
+Shop System Plugins - Terms of use
+This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
+(subsequently referred to as WDCEE) and it's contractual partners (subsequently referred
+to as customer or customers) which are related to the use of plugins provided by WDCEE.
+The Plugin is provided by WDCEE free of charge for it's customers and must be used for
+the purpose of WDCEE's payment platform integration only. It explicitly is not part of
+the general contract between WDCEE and it's customer. The plugin has successfully been
+tested under specific circumstances which are defined as the shopsystem's standard
+configuration (vendor's delivery state). The Customer is responsible for testing the
+plugin's functionality before putting it into production enviroment. The customer uses the
+plugin at own risk. WDCEE does not guarantee it's full functionality neither does WDCEE
+assume liability for any disadvantage related to the use of this plugin. By installing the
+plugin into the shopsystem the customer agrees to the terms of use. Please do not use this
+plugin if you do not agree to the terms of use!
+#ENDREM
+<form action="?ObjectID=#ID&amp;ViewAction=#INPUT.ViewAction" method="post" class="ep-js" data-js="ep.uiForm({showSaveWarn:true})">
+#WITH_ERROR(#FormError)
+<div class="Dialog">
+  <input type="hidden" name="ChangeAction" value="SaveSettings" />
+
+#IF(#paymentType EQ #WC_PAYMENT_TYPE_INVOICE AND NOT("Birthday" IN #Shop.BillingAddressSetMandatoryFields))
+  <div class="DialogMessage MessageWarning">
+    <h3>{Attention}</h3>
+    {ICMakeBirthdayMandatory}
+    <a class="DialogAction" href="?ObjectID=#Shop.ID&amp;ViewAction=MBO-ViewRegistrationSet">{ICEditRegistrationSet}</a>
+  </div>
+#ENDIF
+
+#IF(#FormError)
+  <div class="DialogMessage MessageWarning" id="MessageWarning">
+    <h3>{InputError}</h3>
+    <p>{PleaseCorrectErrors}</p>
+  </div>
+#ENDIF
+#IF(#SetInvisible)
+<div class="DialogMessage" id="MessageInfo">
+  <h3>{Notification}</h3>
+  <p>{SetPaymentMethodInvisible}</p>
+</div>
+#ENDIF
+  <table class="FormGrid">
+    <tr#IF(#FormError_customerId) class="DialogError"#ENDIF>
+      <td class="InputLabellingWide PaddingLeft">Customer ID<span class="MandatoryStar">{MandatoryStar}</span></td>
+      <td><input type="text" name="customerId" value="#customerId" class="Mandatory TextHalfSize ep-js" data-js="ep.uiInput()" /></td>
+    </tr>
+    <tr#IF(#FormError_shopId) class="DialogError"#ENDIF>
+      <td class="InputLabellingWide PaddingLeft">Shop ID</td>
+      <td><input type="text" name="shopId" value="#shopId" class="TextHalfSize ep-js" data-js="ep.uiInput()" /></td>
+    </tr>
+    <tr#IF(#FormError_secret) class="DialogError" #ENDIF>
+      <td class="InputLabellingWide PaddingLeft">Secret<span class="MandatoryStar">{MandatoryStar}</span></td>
+      <td><input type="text" name="secret" value="#secret" class="Mandatory TextExtended ep-js" data-js="ep.uiInput()" /></td>
+    </tr>
+    <tr#IF(#FormError_paymentType) class="DialogError"#ENDIF>
+      <td class="InputLabellingWide PaddingLeft">{ICpaymentType}<span class="MandatoryStar">{MandatoryStar}</span></td>
+      <td>
+        <select class="Text ep-js" data-js="ep.uiInput()" name="paymentType" onchange="activateSendAddressRadio(this);">
+        <option value="#WC_PAYMENT_TYPE_SELECT">{ICcustomerChoice}</option>
+        #LOOP(#WC_PAYMENT_TYPES)
+          <option value="#ID"#IF(#ID EQ #paymentType) selected="selected"#ENDIF>#Name</option>
+        #ENDLOOP
+        </select>
+      </td>
+    </tr>
+    <tr#IF(#FormError_TransactionType) class="DialogError"#ENDIF>
+      <td class="InputLabellingWide PaddingLeft">{TransactionType}<span class="MandatoryStar">{MandatoryStar}</span></td>
+      <td><select class="Text ep-js" data-js="ep.uiInput()" name="TransactionType">
+          <option value="1"#IF(#TransactionType) selected="selected"#ENDIF>{Authorization}</option>
+          <option value="0"#IF(NOT #TransactionType) selected="selected"#ENDIF>{Capture}</option>
+        </select>
+        <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+  		  <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          <i>{Capture}</i>: {BubbleHelpTransactionTypeCapture}<br />
+          <i>{Authorization}</i>: {ICBubbleHelpTransactionTypeAuthorize}
+        </span>
+      </td>
+    </tr>
+    <tr#IF(#FormError_OrderStatusAuthorized) class="DialogError"#ENDIF>
+      <td class="InputLabellingWide PaddingLeft">{ICOrderStatusAuthorized}</td>
+      <td><select class="Text ep-js" data-js="ep.uiInput()" name="OrderStatusAuthorized">
+          <option value="">{EmptyEntry}</option>
+          #LOOP(#OrderStatusAttributes)
+            <option value="#Alias"#IF(#OrderStatusAuthorized EQ #Alias) selected="selected"#ENDIF>#Name</option>
+          #ENDLOOP
+        </select>
+      </td>
+    </tr>
+    <tr#IF(#FormError_OrderStatusSettled) class="DialogError"#ENDIF>
+      <td class="InputLabellingWide PaddingLeft">{ICOrderStatusSettled}</td>
+      <td><select class="Text ep-js" data-js="ep.uiInput()" name="OrderStatusSettled">
+          <option value="">{EmptyEntry}</option>
+          #LOOP(#OrderStatusAttributes)
+            <option value="#Alias"#IF(#OrderStatusSettled EQ #Alias) selected="selected"#ENDIF>#Name</option>
+          #ENDLOOP
+        </select>
+      </td>
+    </tr>
+    <tr#IF(#FormError_sendAddressData) class="DialogError"#ENDIF>
+      <td class="InputLabellingWide PaddingLeft">{ICsendAddressData}<span class="MandatoryStar">{MandatoryStar}</span></td>
+      <td>
+        <input class="ep-js" data-js="ep.uiInput()" type="radio" name="sendAddressData" id="sendAddressData1" value="1"#IF(#sendAddressData) checked="checked" #ENDIF #IF(#paymentType EQ #WC_PAYMENT_TYPE_INVOICE) disabled="disabled"#ENDIF/>
+        <label for="sendAddressData1">{yes}</label>
+        <input class="ep-js" data-js="ep.uiInput()" type="radio" name="sendAddressData" id="sendAddressData0" value="0"#IF(NOT #sendAddressData) checked="checked" #ENDIF  #IF(#paymentType EQ #WC_PAYMENT_TYPE_INVOICE) disabled="disabled"#ENDIF/>
+        <label for="sendAddressData0">{no}</label>
+        </select>
+      </td>
+    </tr>
+      <tr>
+        <td class="InputLabellingWide PaddingLeft">{ICdisplayType}<span class="MandatoryStar">{MandatoryStar}</span></td>
+        <td>
+          <input class="ep-js" data-js="ep.uiInput()" type="radio" name="displayType" id="displayType1" value="1"#IF(#displayType == 1) checked="checked" #ENDIF />
+          <label for="displayType1">{ICPopup}</label>
+          <input class="ep-js" data-js="ep.uiInput()" type="radio" name="displayType" id="displayType2" value="2"#IF(NOT(#DEFINED(#displayType)) OR #displayType == 2) checked="checked" #ENDIF />
+          <label for="displayType2">{ICPage}</label>
+          <input class="ep-js" data-js="ep.uiInput()" type="radio" name="displayType" id="displayType3" value="3"#IF(#displayType == 3) checked="checked" #ENDIF />
+          <label for="displayType3">{ICIFrame}</label>
+       </td>
+      </tr>
+  </table>
+#IF(#FUNCTION("MENU_COUNT", "RelatedTopic") > 0)
+  <div class="DialogMessage RelatedTopics">
+    <h3>{RelatedTopics}</h3>
+    <ul class="DialogActions">
+      #MENU("RelatedTopic")
+      <li>#INCLUDE(#Template)</li>
+      #ENDMENU
+    </ul>
+  </div>
+#ENDIF
+  <div class="DialogButtonbar ep-js" data-js="ep.holdOnTop('bottom', {inheritDimensions: true})">
+    <button type="submit" class="Button SaveButton" name="save">{Save}</button>
+  </div>
+</div>
+#ENDWITH_ERROR
+</form>
+
+<script type="text/javascript">
+function activateSendAddressRadio(el) {
+  var sendAddressRadio1 = document.getElementById('sendAddressData1');
+  var sendAddressRadio0 = document.getElementById('sendAddressData0');
+  if (el.options[el.selectedIndex].value == "#WC_PAYMENT_TYPE_INVOICE[js]") {
+    sendAddressRadio1.disabled = true;
+    sendAddressRadio1.checked  = true;
+    sendAddressRadio0.disabled = true;
+    sendAddressRadio0.checked  = false;
+  }
+  else {
+    sendAddressRadio1.disabled = false;
+    sendAddressRadio1.checked  = #IF(#sendAddressData)true#ELSE#SPACE[0]false#ENDIF;
+    sendAddressRadio0.disabled = false;
+    sendAddressRadio0.checked  = #IF(#sendAddressData)false#ELSE#SPACE[0]true#ENDIF;
+  }
+}
+</script>

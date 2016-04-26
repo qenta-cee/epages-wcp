@@ -1,0 +1,43 @@
+#REM
+Shop System Plugins - Terms of use
+This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
+(subsequently referred to as WDCEE) and it's contractual partners (subsequently referred
+to as customer or customers) which are related to the use of plugins provided by WDCEE.
+The Plugin is provided by WDCEE free of charge for it's customers and must be used for
+the purpose of WDCEE's payment platform integration only. It explicitly is not part of
+the general contract between WDCEE and it's customer. The plugin has successfully been
+tested under specific circumstances which are defined as the shopsystem's standard
+configuration (vendor's delivery state). The Customer is responsible for testing the
+plugin's functionality before putting it into production enviroment. The customer uses the
+plugin at own risk. WDCEE does not guarantee it's full functionality neither does WDCEE
+assume liability for any disadvantage related to the use of this plugin. By installing the
+plugin into the shopsystem the customer agrees to the terms of use. Please do not use this
+plugin if you do not agree to the terms of use!
+#ENDREM
+#IF((
+  (#INSTANCEOF(#Object, "CustomerOrder") AND #INPUT.ViewAction EQ "View"))
+  OR
+  (#INSTANCEOF(#Object, "Basket") AND (#INPUT.ViewAction EQ "View" OR #INPUT.ViewAction EQ "ViewMultiCheckoutBasket")
+))
+  <noscript>
+    #REM if javascript disabled this statement ensures that all links lead to the top frame #ENDREM
+    <base target="_top" />
+  </noscript>
+
+  <script type="text/javascript">
+    if(window.top.location != window.location) { #REM this redirects to the top window if we are in an iframe #ENDREM
+        window.top.location.href = '?ObjectID=#ID#IF(#INPUT.ViewAction NE "View")&ViewAction=#INPUT.ViewAction#ENDIF';
+    }
+    else if (window.opener.location != window.location) { #REM this reloads the opener and closes the popup in case of popup #ENDREM
+      window.opener.location.href = '?ObjectID=#ID#IF(#INPUT.ViewAction NE "View")&ViewAction=#INPUT.ViewAction#ENDIF';
+      window.close();
+    }
+  </script>
+#ENDIF
+
+#REM
+ don't use:
+ window.top.location.href = window.location.href rsp.
+ window.opener.location.href = window.location.href
+ because viewing the order may be the result of a change action and the statements above would make the change action executed again
+#ENDREM
