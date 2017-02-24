@@ -88,7 +88,6 @@ sub InitTransaction {
     'consumerIpAddress'       => $RemoteAddr,
     'orderReference'          => $Container->parent->id,
     'layout'                  => $IsMobile ? 'smartphone' : 'desktop',
-    'maxRetries'              => 2,
     'ic_paymentGUID'          => $pli->get('GUID'),
     'pluginVersion'           => _getPluginVersion()
   );
@@ -116,6 +115,14 @@ sub InitTransaction {
   # consumerMerchantCrmId
   my $BillingAddress = $Container->parent->get('BillingAddress');
   $Params{'consumerMerchantCrmId'} = md5_hex($BillingAddress->get('EMail'));
+
+  # maxRetries
+  if (defined($PaymentMethod->get('maxRetries'))) {
+  	$Params{'maxRetries'} = $PaymentMethod->get('maxRetries');
+  }
+  else {
+  	$Params{'maxRetries'} = -1;
+  }
 
   # add address data if configured
   if ($PaymentMethod->get('sendAddressData')) {

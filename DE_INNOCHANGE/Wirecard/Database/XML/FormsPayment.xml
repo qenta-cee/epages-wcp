@@ -21,7 +21,9 @@ plugin if you do not agree to the terms of use!
       <FormField Name="customerId"            Type="string"  Mandatory="1" />
       <FormField Name="shopId"                Type="string" />
       <FormField Name="secret"                Type="string"  Mandatory="1" />
+      <FormField Name="serviceURL"            Type="string"  Mandatory="1" />
       <FormField Name="paymentType"           Type="string"  Mandatory="1" />
+      <FormField Name="maxRetries"            Type="string" />
       <FormField Name="sendAddressData"       Type="boolean" />
       <FormField Name="TransactionType"       Type="boolean" Mandatory="1" />
       <FormField Name="displayType"           Type="boolean" Mandatory="1" />
