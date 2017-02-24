@@ -18,7 +18,8 @@ plugin if you do not agree to the terms of use!
 <epages>
   <Class reference="1" Path="/Classes/System">
     <Object Alias="Attributes" reference="1">
-      <Attribute Alias="ICWirecard_InitTransactionURL" Type="String"  Length="255" IsCacheable="1" IsExportable="1" ExportLevel="1" delete="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+      <Attribute Alias="ICWirecard_InitTransactionURL"  Type="String" Length="255" IsCacheable="1" IsExportable="1" ExportLevel="1" delete="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+      <Attribute Alias="ICWirecard_MerchantRegisterURL" Type="String" Length="255" IsCacheable="1" IsExportable="1" ExportLevel="1" delete="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
     </Object>
   </Class>
 </epages>

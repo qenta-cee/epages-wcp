@@ -39,6 +39,18 @@ plugin if you do not agree to the terms of use!
   <p>{SetPaymentMethodInvisible}</p>
 </div>
 #ENDIF
+
+#IF (#DEFINED(#System.ICWirecard_MerchantRegisterURL))
+  <div class="DialogMessage MessageHint BottomMargin MessageBox">
+    <h3>{Info0}</h3>
+    <p>
+      {Info1}
+      <br/>
+      <a class="DialogAction" rel="noreferrer" href="#DEREFER(#System.ICWirecard_MerchantRegisterURL)" onclick="openWindow('#DEREFER(#System.ICWirecard_MerchantRegisterURL)', '', '');return false;">{RegisterURL}</a>
+    </p>
+  </div>
+#ENDIF
+
   <table class="FormGrid">
     <tr#IF(#FormError_customerId) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">Customer ID<span class="MandatoryStar">{MandatoryStar}</span></td>

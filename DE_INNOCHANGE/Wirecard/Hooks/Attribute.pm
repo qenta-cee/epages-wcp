@@ -48,7 +48,8 @@ sub OnGetThirdPartyConfigAttributes {
     'SectionName' => $PaymentType->get('NameOrAlias', $hParams->{'LanguageID'}),
     'Attributes' => [
       {'ObjectID' => $PaymentType->id, 'AttributeAlias' => 'Logging'},
-      {'ObjectID' => $RootObjectID,    'AttributeAlias' => 'ICWirecard_InitTransactionURL'}
+      {'ObjectID' => $RootObjectID,    'AttributeAlias' => 'ICWirecard_InitTransactionURL'},
+      {'ObjectID' => $RootObjectID,    'AttributeAlias' => 'ICWirecard_MerchantRegisterURL'}
     ]
   });
 

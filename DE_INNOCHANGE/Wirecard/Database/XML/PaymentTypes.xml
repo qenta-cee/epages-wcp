@@ -16,7 +16,7 @@ plugin into the shopsystem the customer agrees to the terms of use. Please do no
 plugin if you do not agree to the terms of use!
 -->
 <epages>
-  <Class Alias="PaymentTypes" reference="1" >
+  <Object Alias="PaymentTypes" reference="1">
     <PaymentType
         Alias="ICWirecard"
         MethodClass="PaymentMethodICWirecard"
@@ -33,6 +33,6 @@ plugin if you do not agree to the terms of use!
         Position="1200"
         delete="1">
     </PaymentType>
-  </Class>
+  </Object>
   <ViewAction reference="1" Path="/Classes/Shop/Actions/MBO-SearchICWirecardTransactions" PaymentType="/PaymentTypes/ICWirecard" />
 </epages>

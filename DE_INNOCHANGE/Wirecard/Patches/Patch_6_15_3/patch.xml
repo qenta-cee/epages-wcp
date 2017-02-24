@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<PatchCartridge OldRelease='release_6_15_3' NewRelease='release_6_17_52' NewVersion='6.17.52' Cartridge='DE_INNOCHANGE::Wirecard' OldVersion='6.15.3'>
+  <PatchDBStructure />
+  <Patch>
+    <PatchFunction Method='onPatchImportObjects'>
+      <File>Patches/Patch_6_15_3/Database/XML/imp_AttributesSystem.xml</File>
+    </PatchFunction>
+  </Patch>
+  <PatchCartridgeDir />
+  <PatchCartridgeDirPriorPart />
+  <PatchCartridgeDirFinalPart />
+</PatchCartridge>

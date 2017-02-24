@@ -70,6 +70,7 @@ sub InitTransaction {
 
   my $Shop = $Container->getSite;
   my $LanguageID = $Container->get('LanguageID');
+  my $urlType = $IsMobile  ?  'mobile' : 'sf';
   my %Params = (
     'customerId'              => $PaymentMethod->get('customerId'),
     'language'                => GetCodeByLanguageID($LanguageID),
@@ -77,9 +78,9 @@ sub InitTransaction {
     'amount'                  => $pli->get('Amount'),
     'currency'                => $pli->get('CurrencyID'),
     'orderDescription'        => Translate('ICYourOrderAt', $LanguageID, 'DE_INNOCHANGE::Wirecard') . ' ' . $Shop->get('NameOrAlias', $LanguageID),
-    'successUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentSuccessICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => 'sf/mobile'}),
-    'failureUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentFailureICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => 'sf/mobile'}),
-    'confirmUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentConfirmICWirecard', 'ViewAction' => 'SendPaymentConfirmICWirecardResponse'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => 'sf/mobile'}),
+    'successUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentSuccessICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
+    'failureUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentFailureICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
+    'confirmUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentConfirmICWirecard', 'ViewAction' => 'SendPaymentConfirmICWirecardResponse'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
     'cancelUrl'               => BuildShopUrl($Container->parent, {}, {'UseSSL' => 1, 'UseObjectPath' => 0, 'Type' => 'sf/mobile'}), # back to basket page
     'consumerUserAgent'       => $UserAgent,
     'consumerIpAddress'       => $RemoteAddr,
@@ -241,7 +242,7 @@ sub _getPluginVersion {
     LoadRootObject()->get('EpagesVersion'),   # version of shop system
     '',                                       # dependecies
     'epages_wcp',                             # plugin name
-    '2.0.1'                                   # plugin version
+    '1.1.0'                                   # plugin version
   );
   return encode_base64($pluginVersion, '');
 }
