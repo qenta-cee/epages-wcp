@@ -33,6 +33,8 @@ use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Request::Common qw (POST);
 use Digest::MD5 qw (md5_hex);
+use Digest::HMAC qw (hmac hmac_hex);
+use Digest::SHA qw (hmac_sha512 hmac_sha512_hex);
 use MIME::Base64 qw (encode_base64);
 use Encode qw (encode);
 
@@ -111,6 +113,10 @@ sub InitTransaction {
   my $logoUrl = _getShopLogoUrl($Shop);
   $Params{'imageUrl'} = $logoUrl if (defined $logoUrl);
 
+  # consumerMerchantCrmId
+  my $BillingAddress = $Container->parent->get('BillingAddress');
+  $Params{'consumerMerchantCrmId'} = md5_hex($BillingAddress->get('EMail'));
+
   # add address data if configured
   if ($PaymentMethod->get('sendAddressData')) {
     my $BillingAddress = $Container->parent->get('BillingAddress');
@@ -178,7 +184,7 @@ sub InitTransaction {
 #----------------------------------------------------------------------------------------
 # §syntax       $fingerprint = CalculateFingerprint($secret, $fingerPrintOrder, $hData);
 #----------------------------------------------------------------------------------------
-# §description  calculate an md5 fingerprint
+# §description  calculate an hmac_sha512 fingerprint
 #----------------------------------------------------------------------------------------
 # §input        $secret | payment method's secret | string
 # §input        $fingerPrintOrder | comma separated list of hash keys (and secret) specifing the order of values to use for hash calculation | string
@@ -192,7 +198,7 @@ sub CalculateFingerprint {
   foreach my $key (split(/,/, $fingerPrintOrder)) {
     $hashInput .= $key eq 'secret'  ?  $secret : encode('utf-8', $hData->{$key} // '');
   }
-  return md5_hex($hashInput);
+  return hmac_sha512_hex($hashInput, $secret);
 }
 
 #========================================================================================
@@ -242,7 +248,7 @@ sub _getPluginVersion {
     LoadRootObject()->get('EpagesVersion'),   # version of shop system
     '',                                       # dependecies
     'epages_wcp',                             # plugin name
-    '1.1.0'                                   # plugin version
+    '2.1.0'                                   # plugin version
   );
   return encode_base64($pluginVersion, '');
 }
