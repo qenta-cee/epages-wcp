@@ -32,5 +32,8 @@ plugin if you do not agree to the terms of use!
     <Translation Keyword="Info0">Registrierung bei Wirecard</Translation>
     <Translation Keyword="Info1">Falls sie noch nicht über ein Wirecard-Konto verfügen, melden Sie sich bitte bei Wirecard an!</Translation>
     <Translation Keyword="RegisterURL">Jetzt bei Wirecard anmelden</Translation>
+    <Translation Keyword="InfoHeader">Wirecard Checkout Page</Translation>
+    <Translation Keyword="InfoDescription"> Wirecard ist einer der weltweit führenden unabhängigen Anbieter von Outsourcing- und White-Label-Lösungen für den elektronischen Zahlungsverkehr. Als unabhängiger Payment-Anbieter begleiten wir unsere Kunden in allen Phasen der Geschäftsentwicklung. Mit maßgeschneiderten Bezahllösungen setzt unser Unternehmen im E-Payment Akzente und ist Österreichs marktführender Payment Service Provider. Persönlich, kompetent und engagiert.</Translation>
+    <Translation Keyword="InformationURL">Allgemeine Informationen zu den Wirecard Shop-Plugins</Translation>
   </Language>
 </epages>

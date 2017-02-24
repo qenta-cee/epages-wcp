@@ -51,6 +51,17 @@ plugin if you do not agree to the terms of use!
   </div>
 #ENDIF
 
+  #IF (#DEFINED(#System.ICWirecard_GeneralInformationURL))
+  <div class="DialogMessage MessageHint BottomMargin MessageBox">
+    <h3>{InfoHeader}</h3>
+    <p>
+      {InfoDescription}
+      <br/>
+      <a class="DialogAction" rel="noreferrer" href="#DEREFER(#System.ICWirecard_GeneralInformationURL)" onclick="openWindow('#DEREFER(#System.ICWirecard_GeneralInformationURL)', '', '');return false;">{InformationURL}</a>
+    </p>
+  </div>
+  #ENDIF
+
   <table class="FormGrid">
     <tr#IF(#FormError_customerId) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">Customer ID<span class="MandatoryStar">{MandatoryStar}</span></td>

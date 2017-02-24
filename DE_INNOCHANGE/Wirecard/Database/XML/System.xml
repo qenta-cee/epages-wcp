@@ -18,5 +18,6 @@ plugin if you do not agree to the terms of use!
 <epages>
   <System reference="1" Path="/">
     <AttributeValue Name="ICWirecard_InitTransactionURL" Value="https://checkout.wirecard.com/page/init-server.php" />
+    <AttributeValue Name="ICWirecard_GeneralInformationURL" Value="https://guides.wirecard.at/doku.php/plugins_general" />
   </System>
 </epages>

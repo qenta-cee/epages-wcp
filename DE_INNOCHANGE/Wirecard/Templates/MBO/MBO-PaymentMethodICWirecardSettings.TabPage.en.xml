@@ -32,5 +32,8 @@ plugin if you do not agree to the terms of use!
     <Translation Keyword="Info0">Registration at Wirecard</Translation>
     <Translation Keyword="Info1">If you do not have a Wirecard merchant account yet, please register to create one!</Translation>
     <Translation Keyword="RegisterURL">Register at Wirecard</Translation>
+    <Translation Keyword="InfoHeader">Wirecard Checkout Page</Translation>
+    <Translation Keyword="InfoDescription">Wirecard is among the independent global leaders in outsourcing and white label solutions for electronic payment transactions. As an independent supplier of payment solutions, we support our customers at every step of their business development. Our custom-tailored payment solutions are benchmark leaders in e-payment methods and have made us Austria's leading payment service provider. Customized, competent and committed.</Translation>
+    <Translation Keyword="InformationURL">General information regarding Wirecard Shop Plugins</Translation>
   </Language>
 </epages>
