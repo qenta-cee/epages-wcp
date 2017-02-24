@@ -86,6 +86,10 @@ plugin if you do not agree to the terms of use!
         </select>
       </td>
     </tr>
+    <tr#IF(#FormError_serviceURL) class="DialogError" #ENDIF>
+    <td class="InputLabellingWide PaddingLeft">Service URL<span class="MandatoryStar">{MandatoryStar}</span></td>
+    <td><input type="text" name="serviceURL" value="#serviceURL" class="Mandatory TextExtended ep-js" data-js="ep.uiInput()" /></td>
+    </tr>
     <tr#IF(#FormError_TransactionType) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">{TransactionType}<span class="MandatoryStar">{MandatoryStar}</span></td>
       <td><select class="Text ep-js" data-js="ep.uiInput()" name="TransactionType">
@@ -118,6 +122,10 @@ plugin if you do not agree to the terms of use!
           #ENDLOOP
         </select>
       </td>
+    </tr>
+    <tr#IF(#FormError_maxRetries) class="DialogError"#ENDIF>
+    <td class="InputLabellingWide PaddingLeft">Max. Retries</td>
+    <td><input type="text" name="maxRetries" value="#maxRetries" class="TextHalfSize ep-js" data-js="ep.uiInput()" /></td>
     </tr>
     <tr#IF(#FormError_sendAddressData) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">{ICsendAddressData}<span class="MandatoryStar">{MandatoryStar}</span></td>
