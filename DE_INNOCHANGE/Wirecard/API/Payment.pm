@@ -94,11 +94,12 @@ sub InitTransaction {
 
   # service url
   my $CustomerInfo = $Shop->get('CustomerInformation');
-  if (defined($CustomerInfo) && $CustomerInfo->get('IsVisible')) { # url to customer info page if it exists and is visible
-    $Params{'serviceUrl'} = $CustomerInfo->get('WebUrlSSL');
+
+  if (defined($PaymentMethod->get('serviceURL'))) {
+  	$Params{'serviceUrl'} = $PaymentMethod->get('serviceURL');
   }
-  else { # shop start page otherwise
-    $Params{'serviceUrl'} = $Shop->get('WebUrlSSL');
+  else {
+  	$Params{'serviceUrl'} = $Shop->get('WebUrlSSL');
   }
 
   # authorize / capture
