@@ -60,7 +60,7 @@ our %WC_PAYMENT_TYPES = (
   'QUICK'                 => 'Quick',
   'SKRILLWALLET'          => 'Skrill Digital Wallet',
   'SOFORTUEBERWEISUNG'    => 'sofort.com',
-  'TRUSTLY'				  => 'Trustly'
+  'TRUSTLY'               => 'Trustly'
 );
 
 use constant TRANS_TYPE_AUTHORIZED => 'authorized';
