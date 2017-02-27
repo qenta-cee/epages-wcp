@@ -20,7 +20,16 @@ plugin if you do not agree to the terms of use!
     <Translation Keyword="ICpaymentType">Payment type</Translation>
     <Translation Keyword="ICOrderStatusAuthorized">Order status for authorized payment</Translation>
     <Translation Keyword="ICOrderStatusSettled">Order status for debited payment</Translation>
-    <Translation Keyword="ICsendAddressData">Send address data</Translation>
+    <Translation Keyword="ICsendShippingData">Forward consumer shipping data</Translation>
+    <Translation Keyword="ICBubbleHelpShippingData">Forwarding shipping data about your consumer to the respective financial service provider.</Translation>
+    <Translation Keyword="ICsendBillingData">Forward consumer billing data</Translation>
+    <Translation Keyword="ICBubbleHelpBillingData">Forwarding billing data about your consumer to the respective financial service provider.</Translation>
+    <Translation Keyword="ICsendBasketData">Forward basket data</Translation>
+    <Translation Keyword="ICBubbleHelpBasketData">Forwarding basket data to the respective financial service provider.</Translation>
+    <Translation Keyword="ICduplicateRequest">Check for duplicate requests</Translation>
+    <Translation Keyword="ICBubbleHelpDuplicateRequest">Checking duplicate requests made by your consumer.</Translation>
+    <Translation Keyword="ICMaxRetries">Max. retries</Translation>
+    <Translation Keyword="ICBubbleHelpMaxRetries">Maximum number of payment attempts regarding a certain order.</Translation>
     <Translation Keyword="ICdisplayType">Display of payment pages</Translation>
     <Translation Keyword="ICcustomerChoice">let customer choose</Translation>
     <Translation Keyword="ICPopup">popup window</Translation>
