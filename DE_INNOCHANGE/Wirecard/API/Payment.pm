@@ -133,7 +133,7 @@ sub InitTransaction {
   # shippingData
   if ($PaymentMethod->get('sendShippingData')) {
   	my $ShippingAddress = $Container->parent->get('ShippingAddress') // $BillingAddress;
-    $Country = $ShippingAddress->get('Country');
+    my $Country = $ShippingAddress->get('Country');
     my $State = $ShippingAddress->get('State');
     $State = substr($State, 0, 2) if (defined($State) && length($State) > 2);
     $Params{'consumerShippingFirstname'} = $ShippingAddress->get('FirstName');
