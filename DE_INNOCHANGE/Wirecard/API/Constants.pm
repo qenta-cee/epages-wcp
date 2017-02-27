@@ -1,8 +1,8 @@
 #========================================================================================
-# �package      DE_INNOCHANGE::Wirecard::API::Constants
-# �state        public
+# §package      DE_INNOCHANGE::Wirecard::API::Constants
+# §state        public
 #----------------------------------------------------------------------------------------
-# �description  constants for wirecard
+# §description  constants for wirecard
 #
 # Shop System Plugins - Terms of use
 # This terms of use regulates warranty and liability between Wirecard Central Eastern Europe

@@ -1,8 +1,8 @@
 #========================================================================================
-# �package      DE_INNOCHANGE::Wirecard::Hooks::Attribute
-# �state        public
+# §package      DE_INNOCHANGE::Wirecard::Hooks::Attribute
+# §state        public
 #----------------------------------------------------------------------------------------
-# �description  provide attributes configurable in PBO
+# §description  provide attributes configurable in PBO
 #
 # Shop System Plugins - Terms of use
 # This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
@@ -26,14 +26,14 @@ use DE_EPAGES::Object::API::Factory qw (LoadObjectByPath GetRootObjectID);
 use DE_EPAGES::ThirdPartyConfig::API::Constants qw (ATTRIBUTES_CATEGORY_PAYMENT);
 
 #========================================================================================
-# �function     OnGetThirdPartyConfigAttributes
-# �state        public
+# §function     OnGetThirdPartyConfigAttributes
+# §state        public
 #----------------------------------------------------------------------------------------
-# �syntax       OnGetThirdPartyConfigAttributes(\%Params);
+# §syntax       OnGetThirdPartyConfigAttributes(\%Params);
 #----------------------------------------------------------------------------------------
-# �description  provide attributes configurable in PBO
+# §description  provide attributes configurable in PBO
 #----------------------------------------------------------------------------------------
-# �input        $hParams | hook params | ref.hash
+# §input        $hParams | hook params | ref.hash
 #========================================================================================
 sub OnGetThirdPartyConfigAttributes {
   my ($hParams) = @_;
