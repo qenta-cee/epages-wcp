@@ -17,6 +17,11 @@ plugin if you do not agree to the terms of use!
 -->
 <epages>
   <Language Language="en">
+    <Translation Keyword="ICBubbleHelpCustomerId">Customer number you received from Wirecard (customerId, i.e. D2#####).</Translation>
+    <Translation Keyword="ICBubbleHelpShopId">Shop identifier (shopId) in case of more than one shop.</Translation>
+    <Translation Keyword="ICBubbleHelpSecret">String which you received from Wirecard for signing and validating data to prove their authenticity.</Translation>
+    <Translation Keyword="ICServiceUrl">URL to imprint page</Translation>
+    <Translation Keyword="ICBubbleHelpServiceUrl">URL on the payment page which leads to the imprint page of the online shop.</Translation>
     <Translation Keyword="ICpaymentType">Payment type</Translation>
     <Translation Keyword="ICOrderStatusAuthorized">Order status for authorized payment</Translation>
     <Translation Keyword="ICOrderStatusSettled">Order status for debited payment</Translation>

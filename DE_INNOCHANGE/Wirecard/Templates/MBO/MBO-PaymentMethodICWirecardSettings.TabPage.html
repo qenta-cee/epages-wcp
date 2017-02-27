@@ -65,15 +65,30 @@ plugin if you do not agree to the terms of use!
   <table class="FormGrid">
     <tr#IF(#FormError_customerId) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">Customer ID<span class="MandatoryStar">{MandatoryStar}</span></td>
-      <td><input type="text" name="customerId" value="#customerId" class="Mandatory TextHalfSize ep-js" data-js="ep.uiInput()" /></td>
+      <td><input type="text" name="customerId" value="#customerId" class="Mandatory TextHalfSize ep-js" data-js="ep.uiInput()" />
+        <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+        <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleCustomerId}
+        </span>
+      </td>
     </tr>
     <tr#IF(#FormError_shopId) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">Shop ID</td>
-      <td><input type="text" name="shopId" value="#shopId" class="TextHalfSize ep-js" data-js="ep.uiInput()" /></td>
+      <td><input type="text" name="shopId" value="#shopId" class="TextHalfSize ep-js" data-js="ep.uiInput()" />
+        <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+        <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpShopId}
+        </span>
+      </td>
     </tr>
     <tr#IF(#FormError_secret) class="DialogError" #ENDIF>
       <td class="InputLabellingWide PaddingLeft">Secret<span class="MandatoryStar">{MandatoryStar}</span></td>
-      <td><input type="text" name="secret" value="#secret" class="Mandatory TextExtended ep-js" data-js="ep.uiInput()" /></td>
+      <td><input type="text" name="secret" value="#secret" class="Mandatory TextExtended ep-js" data-js="ep.uiInput()" />
+        <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+        <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpSecret}
+        </span>
+      </td>
     </tr>
     <tr#IF(#FormError_paymentType) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">{ICpaymentType}<span class="MandatoryStar">{MandatoryStar}</span></td>
@@ -87,8 +102,13 @@ plugin if you do not agree to the terms of use!
       </td>
     </tr>
     <tr#IF(#FormError_serviceURL) class="DialogError" #ENDIF>
-    <td class="InputLabellingWide PaddingLeft">Service URL<span class="MandatoryStar">{MandatoryStar}</span></td>
-    <td><input type="text" name="serviceURL" value="#serviceURL" class="Mandatory TextExtended ep-js" data-js="ep.uiInput()" /></td>
+    <td class="InputLabellingWide PaddingLeft">{ICServiceUrl}<span class="MandatoryStar">{MandatoryStar}</span></td>
+    <td><input type="text" name="serviceURL" value="#serviceURL" class="Mandatory TextExtended ep-js" data-js="ep.uiInput()" />
+      <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+      <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpServiceUrl}
+        </span>
+    </td>
     </tr>
     <tr#IF(#FormError_TransactionType) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">{TransactionType}<span class="MandatoryStar">{MandatoryStar}</span></td>
@@ -128,7 +148,7 @@ plugin if you do not agree to the terms of use!
     <td><input type="text" name="maxRetries" value="#maxRetries" class="TextHalfSize ep-js" data-js="ep.uiInput()" />
       <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
       <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
-          {BubbleHelpMaxRetries}
+          {ICBubbleHelpMaxRetries}
         </span>
     </td>
     </tr>
@@ -142,7 +162,7 @@ plugin if you do not agree to the terms of use!
       </select>
       <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
       <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
-          {BubbleHelpShippingData}
+          {ICBubbleHelpShippingData}
         </span>
     </td>
 
@@ -157,7 +177,7 @@ plugin if you do not agree to the terms of use!
       </select>
       <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
       <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
-          {BubbleHelpBillingData}
+          {ICBubbleHelpBillingData}
         </span>
     </td>
 
@@ -172,7 +192,7 @@ plugin if you do not agree to the terms of use!
       </select>
       <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
       <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
-          {BubbleHelpBasketData}
+          {ICBubbleHelpBasketData}
         </span>
     </td>
 
@@ -187,7 +207,7 @@ plugin if you do not agree to the terms of use!
       </select>
       <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
       <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
-          {BubbleHelpDuplicateRequest}
+          {ICBubbleHelpDuplicateRequest}
         </span>
     </td>
     </tr>
