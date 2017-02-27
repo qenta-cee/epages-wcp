@@ -78,7 +78,7 @@ plugin if you do not agree to the terms of use!
     <tr#IF(#FormError_paymentType) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">{ICpaymentType}<span class="MandatoryStar">{MandatoryStar}</span></td>
       <td>
-        <select class="Text ep-js" data-js="ep.uiInput()" name="paymentType" onchange="activateSendAddressRadio(this);">
+        <select class="Text ep-js" data-js="ep.uiInput()" name="paymentType">
         <option value="#WC_PAYMENT_TYPE_SELECT">{ICcustomerChoice}</option>
         #LOOP(#WC_PAYMENT_TYPES)
           <option value="#ID"#IF(#ID EQ #paymentType) selected="selected"#ENDIF>#Name</option>
@@ -219,36 +219,3 @@ plugin if you do not agree to the terms of use!
 </div>
 #ENDWITH_ERROR
 </form>
-
-<script type="text/javascript">
-function activateSendAddressRadio(el) {
-  var sendBillingRadio1 = document.getElementById('sendBillingData1');
-  var sendBillingRadio0 = document.getElementById('sendBillingData0');
-  if (el.options[el.selectedIndex].value == "#WC_PAYMENT_TYPE_INVOICE[js]") {
-    sendBillingRadio1.disabled = true;
-    sendBillingRadio1.checked  = true;
-    sendBillingRadio0.disabled = true;
-    sendBillingRadio0.checked  = false;
-  }
-  else {
-    sendBillingRadio1.disabled = false;
-    sendBillingRadio1.checked  = #IF(#sendBillingData)true#ELSE#SPACE[0]false#ENDIF;
-    sendBillingRadio0.disabled = false;
-    sendBillingRadio0.checked  = #IF(#sendBillingData)false#ELSE#SPACE[0]true#ENDIF;
-  }
-  var sendShippingRadio1 = document.getElementById('sendShippingData1');
-  var sendShippingRadio0 = document.getElementById('sendShippingData0');
-  if (el.options[el.selectedIndex].value == "#WC_PAYMENT_TYPE_INVOICE[js]") {
-    sendShippingRadio1.disabled = true;
-    sendShippingRadio1.checked  = true;
-    sendShippingRadio0.disabled = true;
-    sendShippingRadio0.checked  = false;
-  }
-  else {
-    sendShippingRadio1.disabled = false;
-    sendShippingRadio1.checked  = #IF(#sendShippingData)true#ELSE#SPACE[0]false#ENDIF;
-    sendShippingRadio0.disabled = false;
-    sendShippingRadio0.checked  = #IF(#sendShippingData)false#ELSE#SPACE[0]true#ENDIF;
-  }
-}
-</script>
