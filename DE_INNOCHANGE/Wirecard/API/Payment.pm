@@ -127,7 +127,7 @@ sub InitTransaction {
 
   # duplicateRequestCheck
   if (defined($PaymentMethod->get('duplicateRequest'))) {
-  	$Params{'duplicateRequestCheck'} = true;
+  	$Params{'duplicateRequestCheck'} = 'true';
   }
 
   # shippingData
