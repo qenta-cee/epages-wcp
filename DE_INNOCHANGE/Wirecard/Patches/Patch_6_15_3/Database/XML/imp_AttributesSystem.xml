@@ -4,5 +4,8 @@
     <Object Alias='Attributes' reference='1'>
       <Attribute Alias='ICWirecard_MerchantRegisterURL' Length='255' Type='String' IsCacheable='1' ExportLevel='1' Package='DE_EPAGES::Object::API::Attributes::DefaultAttribute' IsExportable='1' />
     </Object>
+    <Object Alias='Attributes' reference='1'>
+      <Attribute Alias='ICWirecard_GeneralInformationURL' Length='255' Type='String' IsCacheable='1' ExportLevel='1' Package='DE_EPAGES::Object::API::Attributes::DefaultAttribute' IsExportable='1' />
+    </Object>
   </Class>
 </epages>

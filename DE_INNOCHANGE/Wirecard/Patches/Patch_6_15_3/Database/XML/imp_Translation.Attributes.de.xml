@@ -5,5 +5,9 @@
       <Attribute Name='Name'>URL zum Registrieren als Wirecard-Händler</Attribute>
       <Attribute Name='Description'>Ist dieser Wert definiert, so wird auf der MBO-Einstellungsseite ein entsprechende Link zum Registrieren angezeigt.</Attribute>
     </Object>
+    <Object Path='/Classes/System/Attributes/ICWirecard_GeneralInformationURL'>
+      <Attribute Name='Name'>URL zu den allgemeinen Shop Plugin Informationen</Attribute>
+      <Attribute Name='Description'>Ist dieser Wert definiert, so wird auf der MBO-Einstellungsseite ein entsprechende Link zu den Informationen angezeigt.</Attribute>
+    </Object>
   </Language>
 </epages>

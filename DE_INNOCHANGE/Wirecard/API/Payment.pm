@@ -88,18 +88,18 @@ sub InitTransaction {
     'consumerIpAddress'       => $RemoteAddr,
     'orderReference'          => $Container->parent->id,
     'layout'                  => $IsMobile ? 'smartphone' : 'desktop',
-    'maxRetries'              => 2,
     'ic_paymentGUID'          => $pli->get('GUID'),
     'pluginVersion'           => _getPluginVersion()
   );
 
   # service url
   my $CustomerInfo = $Shop->get('CustomerInformation');
-  if (defined($CustomerInfo) && $CustomerInfo->get('IsVisible')) { # url to customer info page if it exists and is visible
-    $Params{'serviceUrl'} = $CustomerInfo->get('WebUrlSSL');
+
+  if (defined($PaymentMethod->get('serviceURL'))) {
+  	$Params{'serviceUrl'} = $PaymentMethod->get('serviceURL');
   }
-  else { # shop start page otherwise
-    $Params{'serviceUrl'} = $Shop->get('WebUrlSSL');
+  else {
+  	$Params{'serviceUrl'} = $Shop->get('WebUrlSSL');
   }
 
   # authorize / capture
@@ -117,25 +117,23 @@ sub InitTransaction {
   my $BillingAddress = $Container->parent->get('BillingAddress');
   $Params{'consumerMerchantCrmId'} = md5_hex($BillingAddress->get('EMail'));
 
-  # add address data if configured
-  if ($PaymentMethod->get('sendAddressData')) {
-    my $BillingAddress = $Container->parent->get('BillingAddress');
-    my $Country = $BillingAddress->get('Country');
-    my $BirthDate = $BillingAddress->get('Birthday');
-    $Params{'consumerBillingFirstname'} = $BillingAddress->get('FirstName');
-    $Params{'consumerBillingLastname'}  = $BillingAddress->get('LastName');
-    $Params{'consumerBillingAddress1'}  = $BillingAddress->get('Street');
-    $Params{'consumerBillingAddress2'}  = '';
-    $Params{'consumerBillingCity'}      = $BillingAddress->get('City');
-    $Params{'consumerBillingCountry'}   = defined($Country)  ?  $Country->{'Code2'} : undef;
-    $Params{'consumerBillingZipCode'}   = $BillingAddress->get('Zipcode');
-    $Params{'consumerEmail'}            = $BillingAddress->get('EMail');
-    $Params{'consumerBirthDate'}        = defined($BirthDate)  ?  $BirthDate->strftime('%Y-%m-%d') : undef;
-    $Params{'consumerBillingPhone'}     = $BillingAddress->get('Phone');
-    $Params{'consumerBillingFax'}       = $BillingAddress->get('Fax');
+  # maxRetries
+  if (defined($PaymentMethod->get('maxRetries'))) {
+  	$Params{'maxRetries'} = $PaymentMethod->get('maxRetries');
+  }
+  else {
+  	$Params{'maxRetries'} = -1;
+  }
 
-    my $ShippingAddress = $Container->parent->get('ShippingAddress') // $BillingAddress;
-    $Country = $ShippingAddress->get('Country');
+  # duplicateRequestCheck
+  if (defined($PaymentMethod->get('duplicateRequest'))) {
+  	$Params{'duplicateRequestCheck'} = 'true';
+  }
+
+  # shippingData
+  if ($PaymentMethod->get('sendShippingData')) {
+  	my $ShippingAddress = $Container->parent->get('ShippingAddress') // $BillingAddress;
+    my $Country = $ShippingAddress->get('Country');
     my $State = $ShippingAddress->get('State');
     $State = substr($State, 0, 2) if (defined($State) && length($State) > 2);
     $Params{'consumerShippingFirstname'} = $ShippingAddress->get('FirstName');
@@ -149,6 +147,29 @@ sub InitTransaction {
     $Params{'consumerEmail'}             = $ShippingAddress->get('EMail');
     $Params{'consumerShippingPhone'}     = $ShippingAddress->get('Phone');
     $Params{'consumerShippingFax'}       = $ShippingAddress->get('Fax');
+  }
+
+  # billingData
+  if ($PaymentMethod->get('sendBillingData')) {
+  	my $BillingAddress = $Container->parent->get('BillingAddress');
+    my $Country = $BillingAddress->get('Country');
+    my $BirthDate = $BillingAddress->get('Birthday');
+    $Params{'consumerBillingFirstname'} = $BillingAddress->get('FirstName');
+    $Params{'consumerBillingLastname'}  = $BillingAddress->get('LastName');
+    $Params{'consumerBillingAddress1'}  = $BillingAddress->get('Street');
+    $Params{'consumerBillingAddress2'}  = '';
+    $Params{'consumerBillingCity'}      = $BillingAddress->get('City');
+    $Params{'consumerBillingCountry'}   = defined($Country)  ?  $Country->{'Code2'} : undef;
+    $Params{'consumerBillingZipCode'}   = $BillingAddress->get('Zipcode');
+    $Params{'consumerEmail'}            = $BillingAddress->get('EMail');
+    $Params{'consumerBirthDate'}        = defined($BirthDate)  ?  $BirthDate->strftime('%Y-%m-%d') : undef;
+    $Params{'consumerBillingPhone'}     = $BillingAddress->get('Phone');
+    $Params{'consumerBillingFax'}       = $BillingAddress->get('Fax');
+  }
+
+  # basketData
+  if ($PaymentMethod->get('sendBasketData')) {
+    # TODO
   }
 
   # calculate finger print
