@@ -193,6 +193,7 @@ sub InitTransaction {
         $Params{'basketItem'. $count .'unitNetAmount'} = $LineItem->get('BasePrice');
         $Params{'basketItem'. $count .'unitTaxAmount'} = $LineItem->get('TaxAmount');
         $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
+        $count++;
       }
       elsif (defined $LineItem->get('Quantity')) {
         # shipping
@@ -203,8 +204,10 @@ sub InitTransaction {
         $Params{'basketItem'. $count .'unitNetAmount'} = $LineItem->get('LineItemPrice');
         $Params{'basketItem'. $count .'unitTaxAmount'} = $LineItem->get('TaxAmount');
         $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
+        $count++;
       }
     }
+    $Params{'basketItems'} = $count - 1;
   }
 
   # calculate finger print
