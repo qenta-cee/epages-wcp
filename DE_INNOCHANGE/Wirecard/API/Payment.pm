@@ -200,7 +200,7 @@ sub InitTransaction {
         $Params{'basketItem'. $count .'articleNumber'} = 'Shipping';
         $Params{'basketItem'. $count .'quantity'} = $LineItem->get('Quantity');
         $Params{'basketItem'. $count .'unitGrossAmount'} = $LineItem->get('LineItemPrice');
-        $Params{'basketItem'. $count .'unitNetAmount'} = $LineItem->get('BasePrice');
+        $Params{'basketItem'. $count .'unitNetAmount'} = $LineItem->get('LineItemPrice');
         $Params{'basketItem'. $count .'unitTaxAmount'} = $LineItem->get('TaxAmount');
         $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
       }
