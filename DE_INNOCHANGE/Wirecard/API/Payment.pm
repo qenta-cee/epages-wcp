@@ -73,6 +73,11 @@ sub InitTransaction {
   my $Shop = $Container->getSite;
   my $LanguageID = $Container->get('LanguageID');
   my $urlType = $IsMobile  ?  'mobile' : 'sf';
+  # Shopname in customerStatement must not be longer then 9 chars
+  my $customerStatement = substr $Shop->get('NameOrAlias', $LanguageID), 0, 8;
+  my $orderReference = '';
+  $orderReference .= '0' x(10 - length $Container->parent->id);
+  $orderReference .= $Container->parent->id;
   my %Params = (
     'customerId'              => $PaymentMethod->get('customerId'),
     'language'                => GetCodeByLanguageID($LanguageID),
@@ -80,13 +85,14 @@ sub InitTransaction {
     'amount'                  => $pli->get('Amount'),
     'currency'                => $pli->get('CurrencyID'),
     'orderDescription'        => Translate('ICYourOrderAt', $LanguageID, 'DE_INNOCHANGE::Wirecard') . ' ' . $Shop->get('NameOrAlias', $LanguageID),
+    'customerStatement'       => $customerStatement . ' ' .$orderReference,
     'successUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentSuccessICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
     'failureUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentFailureICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
     'confirmUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentConfirmICWirecard', 'ViewAction' => 'SendPaymentConfirmICWirecardResponse'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
     'cancelUrl'               => BuildShopUrl($Container->parent, {}, {'UseSSL' => 1, 'UseObjectPath' => 0, 'Type' => 'sf/mobile'}), # back to basket page
     'consumerUserAgent'       => $UserAgent,
     'consumerIpAddress'       => $RemoteAddr,
-    'orderReference'          => $Container->parent->id,
+    'orderReference'          => $orderReference,
     'layout'                  => $IsMobile ? 'smartphone' : 'desktop',
     'ic_paymentGUID'          => $pli->get('GUID'),
     'pluginVersion'           => _getPluginVersion()
