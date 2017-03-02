@@ -175,7 +175,36 @@ sub InitTransaction {
 
   # basketData
   if ($PaymentMethod->get('sendBasketData')) {
-    # TODO
+    # get all Line Items
+    my $LineItems = $Container->get('Positions');
+    my $LineItem;
+    my $count = 0;
+    foreach $LineItem (@$LineItems) {
+      if ($count == 0) {
+        # first LineItem is Paymentmethod (Wirecard)
+        $count++;
+      }
+      elsif (defined $LineItem->get('BasePrice') && defined $LineItem->get('Quantity')) {
+        # do not include other LineItems then products
+        $Params{'basketItem'. $count .'name'} = $LineItem->get('Name');
+        $Params{'basketItem'. $count .'articleNumber'} = $LineItem->get('Name');
+        $Params{'basketItem'. $count .'quantity'} = $LineItem->get('Quantity');
+        $Params{'basketItem'. $count .'unitGrossAmount'} = $LineItem->get('LineItemPrice');
+        $Params{'basketItem'. $count .'unitNetAmount'} = $LineItem->get('BasePrice');
+        $Params{'basketItem'. $count .'unitTaxAmount'} = $LineItem->get('TaxAmount');
+        $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
+      }
+      elsif (defined $LineItem->get('Quantity')) {
+        # shipping
+        $Params{'basketItem'. $count .'name'} = $LineItem->get('Name');
+        $Params{'basketItem'. $count .'articleNumber'} = 'Shipping';
+        $Params{'basketItem'. $count .'quantity'} = $LineItem->get('Quantity');
+        $Params{'basketItem'. $count .'unitGrossAmount'} = $LineItem->get('LineItemPrice');
+        $Params{'basketItem'. $count .'unitNetAmount'} = $LineItem->get('BasePrice');
+        $Params{'basketItem'. $count .'unitTaxAmount'} = $LineItem->get('TaxAmount');
+        $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
+      }
+    }
   }
 
   # calculate finger print
