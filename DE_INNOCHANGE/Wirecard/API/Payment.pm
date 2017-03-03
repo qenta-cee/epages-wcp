@@ -37,6 +37,7 @@ use Digest::HMAC qw (hmac hmac_hex);
 use Digest::SHA qw (hmac_sha512 hmac_sha512_hex);
 use MIME::Base64 qw (encode_base64);
 use Encode qw (encode);
+use Math::BigFloat;
 
 use DE_EPAGES::Core::API::Error     qw (Error);
 use DE_EPAGES::Core::API::Url qw (ParseQueryString);
@@ -175,34 +176,42 @@ sub InitTransaction {
 
   # basketData
   if ($PaymentMethod->get('sendBasketData')) {
+    # set precision, should be per currency
+    Math::BigFloat->precision(-2);
     # get all Line Items
     my $LineItems = $Container->get('Positions');
     my $LineItem;
     my $count = 0;
     foreach $LineItem (@$LineItems) {
+      my $TaxRate = $LineItem->get('TaxRate') * 100
       if ($count == 0) {
         # first LineItem is Paymentmethod (Wirecard)
         $count++;
       }
       elsif (defined $LineItem->get('BasePrice') && defined $LineItem->get('Quantity')) {
         # do not include other LineItems then products
+        # BasePrice is unit price
+        my $TaxAmount = Math::BigFloat->new($LineItem->get('BasePrice') / (100 + $TaxRate) * $TaxRate);
+        my $NetAmount = Math::BigFloat->new($LineItem->get('BasePrice') - $TaxAmount);
         $Params{'basketItem'. $count .'name'} = $LineItem->get('Name');
         $Params{'basketItem'. $count .'articleNumber'} = $LineItem->get('Name');
         $Params{'basketItem'. $count .'quantity'} = $LineItem->get('Quantity');
-        $Params{'basketItem'. $count .'unitGrossAmount'} = $LineItem->get('LineItemPrice');
-        $Params{'basketItem'. $count .'unitNetAmount'} = $LineItem->get('BasePrice');
-        $Params{'basketItem'. $count .'unitTaxAmount'} = $LineItem->get('TaxAmount');
+        $Params{'basketItem'. $count .'unitGrossAmount'} = Math::BigFloat->new($LineItem->get('BasePrice'));
+        $Params{'basketItem'. $count .'unitNetAmount'} = $NetAmount;
+        $Params{'basketItem'. $count .'unitTaxAmount'} = $TaxAmount;
         $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
         $count++;
       }
       elsif (defined $LineItem->get('Quantity')) {
         # shipping
+        my $TaxAmount = Math::BigFloat->new($LineItem->get('LineItemPrice') / (100 + $TaxRate) * $TaxRate);
+        my $NetAmount = Math::BigFloat->new($LineItem->get('LineItemPrice') - $TaxAmount);
         $Params{'basketItem'. $count .'name'} = $LineItem->get('Name');
         $Params{'basketItem'. $count .'articleNumber'} = 'Shipping';
         $Params{'basketItem'. $count .'quantity'} = $LineItem->get('Quantity');
-        $Params{'basketItem'. $count .'unitGrossAmount'} = $LineItem->get('LineItemPrice');
-        $Params{'basketItem'. $count .'unitNetAmount'} = $LineItem->get('LineItemPrice');
-        $Params{'basketItem'. $count .'unitTaxAmount'} = $LineItem->get('TaxAmount');
+        $Params{'basketItem'. $count .'unitGrossAmount'} = Math::BigFloat->new($LineItem->get('LineItemPrice'));
+        $Params{'basketItem'. $count .'unitNetAmount'} = $NetAmount;
+        $Params{'basketItem'. $count .'unitTaxAmount'} = $TaxAmount;
         $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
         $count++;
       }
