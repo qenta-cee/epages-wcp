@@ -89,6 +89,7 @@ sub InitTransaction {
     'customerStatement'       => $customerStatement . ' ' .$orderReference,
     'successUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentSuccessICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
     'failureUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentFailureICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
+    'pendingUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentPendingICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
     'confirmUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentConfirmICWirecard', 'ViewAction' => 'SendPaymentConfirmICWirecardResponse'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
     'cancelUrl'               => BuildShopUrl($Container->parent, {}, {'UseSSL' => 1, 'UseObjectPath' => 0, 'Type' => 'sf/mobile'}), # back to basket page
     'consumerUserAgent'       => $UserAgent,

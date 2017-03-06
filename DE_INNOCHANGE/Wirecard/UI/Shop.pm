@@ -53,6 +53,26 @@ sub PaymentSuccessICWirecard {
 }
 
 #========================================================================================
+# §function     PaymentPendingICWirecard
+# §state        public
+#----------------------------------------------------------------------------------------
+# §syntax       $Package->PaymentPendingICWirecard($Servlet);
+#----------------------------------------------------------------------------------------
+# §description  customer is redirected to this url in case of pending
+#----------------------------------------------------------------------------------------
+# §input        $Servlet | servlet | object
+#========================================================================================
+sub PaymentPendingICWirecard {
+  my $self = shift;
+  my ($Servlet) = @_;
+
+  my $hFormValues = _getFormValues($Servlet);
+  LogPayment('ICWirecard', 'PaymentPendingICWirecard', $hFormValues);
+
+  return _PaymentPending($Servlet, $hFormValues);
+}
+
+#========================================================================================
 # §function     PaymentConfirmICWirecard
 # §state        public
 #----------------------------------------------------------------------------------------
@@ -203,6 +223,106 @@ sub _TestSuccessParameters {
   $Values{'TransID'}        = $hFormValues->{'orderNumber'}        if (isValid($hFormValues->{'orderNumber'}));
   $Values{'InternalMethod'} = $hFormValues->{'paymentType'}        if (isValid($hFormValues->{'paymentType'}));
   $Values{'TransStatus'}    = $PaymentLineItem->get('TransactionType')  ?  TRANS_TYPE_AUTHORIZED : TRANS_TYPE_SETTLED;
+  $Values{'TransTime'}      = GetCurrentDBHandle()->currentDateTime;
+  LogPayment('ICWirecard', 'callback values', \%Values);
+
+  return \%Values;
+}
+
+#========================================================================================
+# §function     _PaymentPending
+# §state        private
+#----------------------------------------------------------------------------------------
+# §syntax       _PaymentPending($Servlet, $hFormValues);
+#----------------------------------------------------------------------------------------
+# §description  handle pending payment
+#----------------------------------------------------------------------------------------
+# §input        $Servlet | servlet | object
+# §input        $hFormValues | form values | ref.hash
+# §input        $NoFormError | don't add/execute form errors on error (optional, defaults to false) | boolean
+#========================================================================================
+sub _PaymentPending {
+  my ($Servlet, $hFormValues, $NoFormError) = @_;
+
+  my $hValues = _TestPendingParameters($Servlet, $hFormValues, $NoFormError);
+  my $PaymentLineItem = delete($hValues->{'PaymentLineItem'});
+  return undef unless defined $PaymentLineItem;
+  my $BasketOrder = $PaymentLineItem->container->parent;
+  if (exists($hValues->{'Error'})) {
+    if ($NoFormError) {
+      $Servlet->vars('ICWirecardResultMessage', $hValues->{'Error'});
+      return undef;
+    }
+    $Servlet->vars('PaymentObject', $BasketOrder->tleHash);
+    $Servlet->vars('PaymentError', $hValues->{'Error'});
+    $Servlet->vars('ViewAction', 'ViewPaymentICWirecardError');
+    return;
+  }
+  # success
+  $PaymentLineItem->set($hValues);
+
+  # create order
+  my $Order = $BasketOrder->instanceOf('Basket')  ?  DE_EPAGES::Order::UI::Basket->doBasket2Order($Servlet, $BasketOrder) : $BasketOrder;
+
+  my $Status = 'PendingOn';
+
+  my %OrderUpdate = ();
+  $OrderUpdate{$Status} = GetCurrentDBHandle->currentDateTime() if (defined $Status);
+  $OrderUpdate{'Comment'} = join("\n", map { "$_: $hFormValues->{$_}" } grep { !($_ ~~ @PARAMS_NO_COMMENT) } keys %$hFormValues);
+  $Order->set(\%OrderUpdate);
+  return $Order; # show order confirmation page
+}
+
+#========================================================================================
+# §function     _TestPendingParameters
+# §state        private
+#----------------------------------------------------------------------------------------
+# §syntax       my $hValues = _TestPendingParameters($Servlet, $hFormValues);
+#----------------------------------------------------------------------------------------
+# §description  test callback parameters in pending case
+#----------------------------------------------------------------------------------------
+# §input        $Servlet | servlet | object
+# §input        $hFormValues | form values | ref.hash
+# §input        $NoFormError | don't add/execute form errors if payment line item not found (optional, defaults to false) | boolean
+# §return       $hValues | hash containing the payment line item and the values to set for it | ref.hash
+#========================================================================================
+sub _TestPendingParameters {
+  my ($Servlet, $hFormValues, $NoFormError) = @_;
+
+  my $PaymentLineItem = _getPaymentLineItem($Servlet, $hFormValues, $NoFormError);
+  return {'Error' => 'NoPaymentLineItem'} unless defined $PaymentLineItem;
+  my $PaymentMethod = $PaymentLineItem->get('PaymentMethod');
+
+  # check fingerprint
+  my $expectedFingerprint = CalculateFingerprint($PaymentMethod->get('secret'), $hFormValues->{'responseFingerprintOrder'}, $hFormValues);
+
+  if ($hFormValues->{'responseFingerprint'} ne $expectedFingerprint) {
+    LogPayment('ICWirecard', 'fingerprint mismatch', {'received' => $hFormValues->{'responseFingerprint'}, 'calculated' => $expectedFingerprint});
+    return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'fingerprintMismatch'};
+  }
+
+  # check amount/currency
+  if (fcmp($hFormValues->{'amount'}, $PaymentLineItem->get('Amount')) != 0) {
+    LogPayment('ICWirecard', 'amount mismatch', {'received' => $hFormValues->{'amount'}, 'expected' => $PaymentLineItem->get('Amount')});
+    return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'amountMismatch'};
+  }
+  if ($hFormValues->{'currency'} ne $PaymentLineItem->get('CurrencyID')) {
+    LogPayment('ICWirecard', 'currency mismatch', {'received' => $hFormValues->{'currency'}, 'expected' => $PaymentLineItem->get('CurrencyID')});
+    return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'currencyMismatch'};
+  }
+
+  # check payment state
+  if ($hFormValues->{'paymentState'} ne 'PENDING') {
+    LogPayment('ICWirecard', 'paymentState', {'received' => $hFormValues->{'paymentState'}, 'expected' => 'PENDING'});
+    return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'paymentState'};
+  }
+
+  my %Values = ('PaymentLineItem' => $PaymentLineItem);
+  $Values{'AvsCode'}        = $hFormValues->{'avsResponseCode'}    if (isValid($hFormValues->{'avsResponseCode'}));
+  $Values{'Message'}        = $hFormValues->{'avsResponseMessage'} if (isValid($hFormValues->{'avsResponseMessage'}));
+  $Values{'TransID'}        = $hFormValues->{'orderNumber'}        if (isValid($hFormValues->{'orderNumber'}));
+  $Values{'InternalMethod'} = $hFormValues->{'paymentType'}        if (isValid($hFormValues->{'paymentType'}));
+  $Values{'TransStatus'}    = 'PendingOn';
   $Values{'TransTime'}      = GetCurrentDBHandle()->currentDateTime;
   LogPayment('ICWirecard', 'callback values', \%Values);
 

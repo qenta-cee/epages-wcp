@@ -21,6 +21,7 @@ plugin if you do not agree to the terms of use!
       <ChangeAction Alias="PaymentSuccessICWirecard"             Package="DE_INNOCHANGE::Wirecard::UI::Shop" delete="1" />
       <ChangeAction Alias="PaymentFailureICWirecard"             Package="DE_INNOCHANGE::Wirecard::UI::Shop" delete="1" />
       <ChangeAction Alias="PaymentConfirmICWirecard"             Package="DE_INNOCHANGE::Wirecard::UI::Shop" delete="1" />
+      <ChangeAction Alias="PaymentPendingICWirecard"             Package="DE_INNOCHANGE::Wirecard::UI::Shop" delete="1" />
       <ViewAction   Alias="SendPaymentConfirmICWirecardResponse" Package="DE_INNOCHANGE::Wirecard::UI::Shop" delete="1" />
 
       <ViewAction Alias="ViewPaymentICWirecardError" Package="DE_EPAGES::Presentation::UI::Object" FunctionName="View" delete="1" />
