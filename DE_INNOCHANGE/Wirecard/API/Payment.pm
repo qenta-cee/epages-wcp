@@ -37,7 +37,6 @@ use Digest::HMAC qw (hmac hmac_hex);
 use Digest::SHA qw (hmac_sha512 hmac_sha512_hex);
 use MIME::Base64 qw (encode_base64);
 use Encode qw (encode);
-use Math::BigFloat;
 
 use DE_EPAGES::Core::API::Error     qw (Error);
 use DE_EPAGES::Core::API::Url qw (ParseQueryString);
@@ -72,6 +71,7 @@ sub InitTransaction {
   Error('NO_WIRECARD', {'ObjectPath' => $pli->pathString}) unless(defined($PaymentMethod) && $PaymentMethod->instanceOf('PaymentMethodICWirecard'));
 
   my $Shop = $Container->getSite;
+  my $Locale = $Shop->siteLocale($Container->get('LocaleID'));
   my $LanguageID = $Container->get('LanguageID');
   my $urlType = $IsMobile  ?  'mobile' : 'sf';
   # Shopname in customerStatement must not be longer then 9 chars
@@ -176,14 +176,12 @@ sub InitTransaction {
 
   # basketData
   if ($PaymentMethod->get('sendBasketData')) {
-    # set precision, should be per currency
-    Math::BigFloat->precision(-2);
     # get all Line Items
     my $LineItems = $Container->get('Positions');
     my $LineItem;
     my $count = 0;
     foreach $LineItem (@$LineItems) {
-      my $TaxRate = $LineItem->get('TaxRate') * 100
+      my $TaxRate = $LineItem->get('TaxRate') * 100;
       if ($count == 0) {
         # first LineItem is Paymentmethod (Wirecard)
         $count++;
@@ -191,12 +189,12 @@ sub InitTransaction {
       elsif (defined $LineItem->get('BasePrice') && defined $LineItem->get('Quantity')) {
         # do not include other LineItems then products
         # BasePrice is unit price
-        my $TaxAmount = Math::BigFloat->new($LineItem->get('BasePrice') / (100 + $TaxRate) * $TaxRate);
-        my $NetAmount = Math::BigFloat->new($LineItem->get('BasePrice') - $TaxAmount);
+        my $TaxAmount = $Locale->roundMoney($LineItem->get('BasePrice') / (100 + $TaxRate) * $TaxRate, $pli->get('CurrencyID'));
+        my $NetAmount = $Locale->roundMoney($LineItem->get('BasePrice') - $TaxAmount, $pli->get('CurrencyID'));
         $Params{'basketItem'. $count .'name'} = $LineItem->get('Name');
         $Params{'basketItem'. $count .'articleNumber'} = $LineItem->get('Name');
         $Params{'basketItem'. $count .'quantity'} = $LineItem->get('Quantity');
-        $Params{'basketItem'. $count .'unitGrossAmount'} = Math::BigFloat->new($LineItem->get('BasePrice'));
+        $Params{'basketItem'. $count .'unitGrossAmount'} = $Locale->roundMoney($LineItem->get('BasePrice'), $pli->get('CurrencyID'));
         $Params{'basketItem'. $count .'unitNetAmount'} = $NetAmount;
         $Params{'basketItem'. $count .'unitTaxAmount'} = $TaxAmount;
         $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
@@ -204,12 +202,12 @@ sub InitTransaction {
       }
       elsif (defined $LineItem->get('Quantity')) {
         # shipping
-        my $TaxAmount = Math::BigFloat->new($LineItem->get('LineItemPrice') / (100 + $TaxRate) * $TaxRate);
-        my $NetAmount = Math::BigFloat->new($LineItem->get('LineItemPrice') - $TaxAmount);
+        my $TaxAmount = $Locale->roundMoney($LineItem->get('LineItemPrice') / (100 + $TaxRate) * $TaxRate, $pli->get('CurrencyID'));
+        my $NetAmount = $Locale->roundMoney($LineItem->get('LineItemPrice') - $TaxAmount, $pli->get('CurrencyID'));
         $Params{'basketItem'. $count .'name'} = $LineItem->get('Name');
         $Params{'basketItem'. $count .'articleNumber'} = 'Shipping';
         $Params{'basketItem'. $count .'quantity'} = $LineItem->get('Quantity');
-        $Params{'basketItem'. $count .'unitGrossAmount'} = Math::BigFloat->new($LineItem->get('LineItemPrice'));
+        $Params{'basketItem'. $count .'unitGrossAmount'} = $Locale->roundMoney($LineItem->get('LineItemPrice'), $pli->get('CurrencyID'));
         $Params{'basketItem'. $count .'unitNetAmount'} = $NetAmount;
         $Params{'basketItem'. $count .'unitTaxAmount'} = $TaxAmount;
         $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
