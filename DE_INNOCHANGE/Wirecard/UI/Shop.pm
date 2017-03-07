@@ -89,7 +89,12 @@ sub PaymentConfirmICWirecard {
   my $hFormValues = _getFormValues($Servlet);
   LogPayment('ICWirecard', 'PaymentConfirmICWirecard', $hFormValues);
 
-  my $Order = _PaymentSuccess($Servlet, $hFormValues, 1);
+  if ($hFormValues->{'paymentState'} ne 'PENDING') {
+    my $Order = _PaymentSuccess($Servlet, $hFormValues, 1);
+  }
+  else {
+    my $Order = _PaymentPending($Servlet, $hFormValues, 1);
+  }
   if (!defined $Order) { # ensure an error message is set in error case
     my $errorMessage = $Servlet->vars('ICWirecardResultMessage');
     $Servlet->vars('ICWirecardResultMessage', 'internal error') unless defined($errorMessage);
@@ -270,6 +275,8 @@ sub _PaymentPending {
   $OrderUpdate{$Status} = GetCurrentDBHandle->currentDateTime() if (defined $Status);
   $OrderUpdate{'Comment'} = join("\n", map { "$_: $hFormValues->{$_}" } grep { !($_ ~~ @PARAMS_NO_COMMENT) } keys %$hFormValues);
   $Order->set(\%OrderUpdate);
+
+  $Servlet->vars('Notification', 'The financial institution has not confirmed the payment yet');
   return $Order; # show order confirmation page
 }
 
@@ -299,16 +306,6 @@ sub _TestPendingParameters {
   if ($hFormValues->{'responseFingerprint'} ne $expectedFingerprint) {
     LogPayment('ICWirecard', 'fingerprint mismatch', {'received' => $hFormValues->{'responseFingerprint'}, 'calculated' => $expectedFingerprint});
     return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'fingerprintMismatch'};
-  }
-
-  # check amount/currency
-  if (fcmp($hFormValues->{'amount'}, $PaymentLineItem->get('Amount')) != 0) {
-    LogPayment('ICWirecard', 'amount mismatch', {'received' => $hFormValues->{'amount'}, 'expected' => $PaymentLineItem->get('Amount')});
-    return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'amountMismatch'};
-  }
-  if ($hFormValues->{'currency'} ne $PaymentLineItem->get('CurrencyID')) {
-    LogPayment('ICWirecard', 'currency mismatch', {'received' => $hFormValues->{'currency'}, 'expected' => $PaymentLineItem->get('CurrencyID')});
-    return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'currencyMismatch'};
   }
 
   # check payment state
