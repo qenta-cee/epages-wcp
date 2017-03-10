@@ -22,5 +22,40 @@ plugin if you do not agree to the terms of use!
       #ORDERCONFIRMATIONTEXT(#Object)<br />
       {PendingText}
     </p>
+    <p>
+      {OrderNo} #Alias <br />
+      <b>{DoNow}</b><br />
+      <a class="Action" href="#IF(#Shop.IsUnityRegistered)#Shop.WebUrlUnitySSL#ELSE?ObjectPath=#Shop.Path[url]#ENDIF">{DisplayHomepage}</a><br />
+      #IF(#Shop.FeatureMaxValue.DetailedSearch)
+      <a class="Action" href="?ObjectPath=#Shop.Path[url]&amp;ViewAction=FacetedSearchProducts">
+        {SearchProducts}
+      </a><br />
+      #ENDIF
+      #IF(NOT #Session.User.IsAnonymous)
+      <a class="Action" href="?ObjectID=#Session.User.ID&amp;ViewAction=ViewMyAccount">
+        {MyAccount}
+      </a><br />
+      <a class="Action ep-js" data-js=".sendAsForm({formOptions: {'ObjectPath': '#Shop.Path[jr]', 'ViewAction': 'View', 'ChangeAction': 'Logout'}})" href="#">{Logout}</a>
+      #ENDIF
+    </p>
   </div>
+  <table class="InnerTop ClearBoth">
+    <tr>
+      #IF(#BillingAddress)#WITH(#BillingAddress)
+      <td class="Address">
+        <h3 class="BottomSmallMargin">{BillingAddress}</h3>
+        #FUNCTION("LocaleInclude", "Address", #Country.Code2)
+        <br />#INCLUDE("CustomerInfo")
+      </td>
+      #ENDWITH#ENDIF
+
+      #IF(#ShippingAddress)#WITH(#ShippingAddress)
+      <td class="Address">
+        <h3 class="BottomSmallMargin">{ShippingAddress}</h3>
+        #FUNCTION("LocaleInclude", "Address", #Country.Code2)
+        #IF(#EMail)<br />#EMail#ENDIF
+      </td>
+      #ENDWITH#ENDIF
+    </tr>
+  </table>
 </div>
