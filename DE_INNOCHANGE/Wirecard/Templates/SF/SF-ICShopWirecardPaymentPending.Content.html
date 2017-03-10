@@ -23,7 +23,9 @@ plugin if you do not agree to the terms of use!
       {PendingText}
     </p>
     <p>
-      {OrderNo} #Alias <br />
+      {OrderNo} #Alias
+    </p>
+    <p>
       <b>{DoNow}</b><br />
       <a class="Action" href="#IF(#Shop.IsUnityRegistered)#Shop.WebUrlUnitySSL#ELSE?ObjectPath=#Shop.Path[url]#ENDIF">{DisplayHomepage}</a><br />
       #IF(#Shop.FeatureMaxValue.DetailedSearch)
@@ -35,7 +37,7 @@ plugin if you do not agree to the terms of use!
       <a class="Action" href="?ObjectID=#Session.User.ID&amp;ViewAction=ViewMyAccount">
         {MyAccount}
       </a><br />
-      <a class="Action ep-js" data-js=".sendAsForm({formOptions: {'ObjectPath': '#Shop.Path[jr]', 'ViewAction': 'View', 'ChangeAction': 'Logout'}})" href="#">{Logout}</a>
+      <a class="Action ep-js" data-js=".sendAsForm({formOptions: {'ObjectPath': '#Shop.Path[js]', 'ViewAction': 'View', 'ChangeAction': 'Logout'}})" href="#">{Logout}</a>
       #ENDIF
     </p>
   </div>
@@ -58,4 +60,7 @@ plugin if you do not agree to the terms of use!
       #ENDWITH#ENDIF
     </tr>
   </table>
+
+  <div class="Separator">&nbsp;</div>
+  #INCLUDE("INC-OrderInformationTable")
 </div>
