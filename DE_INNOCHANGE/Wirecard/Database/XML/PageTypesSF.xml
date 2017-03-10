@@ -38,6 +38,13 @@ plugin if you do not agree to the terms of use!
         <ViewAction URLAction="ViewPaymentICWirecardError" />
       </PageType>
     </Class>
+    <Class reference="1" Path="/Classes/Shop">
+      <PageType Alias="SF-ICShopWirecardPaymentPending" Base="SF" delete="1">
+        <Template Name="Content" FileName="SF/SF-ICShopWirecardPaymentPending.Content.html" delete="1" />
+        <Template Name="Head-ICWirecardRedirect" FileName="SF/SF-ICShopWirecardPaymentPending.Head-ICWirecardRedirect.html" delete="1" />
+        <ViewAction URLAction="ViewPaymentICWirecardPending" />
+      </PageType>
+    </Class>
     <Class reference="1" Path="/Classes/Object">
       <PageType Alias="SF" reference="1">
         <Menu Template="Head" reference="1">

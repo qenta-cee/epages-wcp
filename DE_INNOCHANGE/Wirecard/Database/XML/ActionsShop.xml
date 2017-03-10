@@ -25,6 +25,7 @@ plugin if you do not agree to the terms of use!
       <ViewAction   Alias="SendPaymentConfirmICWirecardResponse" Package="DE_INNOCHANGE::Wirecard::UI::Shop" delete="1" />
 
       <ViewAction Alias="ViewPaymentICWirecardError" Package="DE_EPAGES::Presentation::UI::Object" FunctionName="View" delete="1" />
+      <ViewAction Alias="ViewPaymentICWirecardPending" Package="DE_EPAGES::Presentation::UI::Object" FunctionName="View" delete="1" />
 
       <ViewAction Alias="MBO-SearchICWirecardTransactions" Package="DE_INNOCHANGE::Wirecard::UI::ShopMBO" FunctionName="SearchTransactions" delete="1" />
       <ViewAction Alias="MBO-ViewICWirecardTransactions"   Package="DE_INNOCHANGE::Wirecard::UI::ShopMBO" FunctionName="ViewTransactions"   delete="1" />

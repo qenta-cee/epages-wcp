@@ -173,7 +173,13 @@ sub _PaymentSuccess {
   $OrderUpdate{$Status} = GetCurrentDBHandle->currentDateTime() if (defined $Status);
   $OrderUpdate{'Comment'} = join("\n", map { "$_: $hFormValues->{$_}" } grep { !($_ ~~ @PARAMS_NO_COMMENT) } keys %$hFormValues);
   $Order->set(\%OrderUpdate);
-  return $Order; # show order confirmation page
+
+  if ($hFormValues->{'paymentState'} eq 'SUCCESS') {
+    return $Order; # show order confirmation page
+  }
+  $Servlet->vars('Object', $Order);
+  $Servlet->vars('ViewAction', 'ViewPaymentICWirecardPending');
+  return;
 }
 
 #========================================================================================
