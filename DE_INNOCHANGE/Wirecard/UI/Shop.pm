@@ -144,6 +144,12 @@ sub _PaymentSuccess {
   my $BasketOrder = $PaymentLineItem->container->parent;
   if (exists($hValues->{'Error'})) {
     if ($NoFormError) {
+      my $Order = $BasketOrder->instanceOf('Basket') ? DE_EPAGES::Order::UI::Basket->doBasket2Order($Servlet, $BasketOrder) : $BasketOrder;
+      my %OrderUpdate = ();
+      my Status = 'CancelledOn';
+      $OrderUpdate{$Status} = GetCurrentDBHandle->currentDateTime() if (defined $Status);
+      $Order->set(\%OrderUpdate);
+
       $Servlet->vars('ICWirecardResultMessage', $hValues->{'Error'});
       return undef;
     }
@@ -328,6 +334,16 @@ sub PaymentFailureICWirecard {
     'TransStatus' => TRANS_TYPE_DECLINED,
     'TransTime'   => GetCurrentDBHandle()->currentDateTime
   });
+
+  # save failed payment to ordertable
+  my $BasketOrder = $PaymentLineItem->container->parent;
+  my $Order = $BasketOrder->instanceOf('Basket') ? DE_EPAGES::Order::UI::Basket->doBasket2Order($Servlet, $BasketOrder) : $BasketOrder;
+  my $Status = 'CancelledOn';
+  my %OrderUpdate = ();
+  $OrderUpdate{$Status} = GetCurrentDBHandle->currentDateTime() if (defined $Status);
+  $OrderUpdate{'Comment'} = $hFormValues->{'consumerMessage'};
+  $Order->set(\%OrderUpdate);
+
   $Servlet->vars('PaymentObject', $PaymentLineItem->container->parent->tleHash);
   $Servlet->vars('consumerMessage', $hFormValues->{'consumerMessage'});
   $Servlet->vars('ViewAction', 'ViewPaymentICWirecardError');
