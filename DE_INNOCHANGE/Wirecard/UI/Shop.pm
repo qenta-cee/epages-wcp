@@ -78,7 +78,7 @@ sub PaymentPendingICWirecard {
 #----------------------------------------------------------------------------------------
 # §syntax       $Package->PaymentConfirmICWirecard($Servlet);
 #----------------------------------------------------------------------------------------
-# §description  server to server notification about successful payment
+# §description  server to server notification about successful or pending payment
 #----------------------------------------------------------------------------------------
 # §input        $Servlet | servlet | object
 #========================================================================================
@@ -129,7 +129,7 @@ sub SendPaymentConfirmICWirecardResponse {
 #----------------------------------------------------------------------------------------
 # §syntax       _PaymentSuccess($Servlet, $hFormValues);
 #----------------------------------------------------------------------------------------
-# §description  handle successful payment
+# §description  handle successful and pending payment
 #----------------------------------------------------------------------------------------
 # §input        $Servlet | servlet | object
 # §input        $hFormValues | form values | ref.hash
@@ -144,12 +144,6 @@ sub _PaymentSuccess {
   my $BasketOrder = $PaymentLineItem->container->parent;
   if (exists($hValues->{'Error'})) {
     if ($NoFormError) {
-      my $Order = $BasketOrder->instanceOf('Basket') ? DE_EPAGES::Order::UI::Basket->doBasket2Order($Servlet, $BasketOrder) : $BasketOrder;
-      my %OrderUpdate = ();
-      my Status = 'CancelledOn';
-      $OrderUpdate{$Status} = GetCurrentDBHandle->currentDateTime() if (defined $Status);
-      $Order->set(\%OrderUpdate);
-
       $Servlet->vars('ICWirecardResultMessage', $hValues->{'Error'});
       return undef;
     }
@@ -183,6 +177,7 @@ sub _PaymentSuccess {
   if ($hFormValues->{'paymentState'} eq 'SUCCESS') {
     return $Order; # show order confirmation page
   }
+  # confirmation page with pending
   $Servlet->vars('Object', $Order);
   $Servlet->vars('ViewAction', 'ViewPaymentICWirecardPending');
   return;
@@ -218,6 +213,7 @@ sub _TestSuccessParameters {
 
   my $TransactionType = 'PendingOn';
 
+  # no amount, currency check for pending
   if ($hFormValues->{'paymentState'} eq 'SUCCESS') {
     # check amount/currency
     if (fcmp($hFormValues->{'amount'}, $PaymentLineItem->get('Amount')) != 0) {
@@ -233,7 +229,7 @@ sub _TestSuccessParameters {
 
   # check payment state
   if ($hFormValues->{'paymentState'} ne 'SUCCESS' && $hFormValues->{'paymentState'} ne 'PENDING') {
-    LogPayment('ICWirecard', 'paymentState', {'received' => $hFormValues->{'paymentState'}, 'expected' => 'SUCCESS'});
+    LogPayment('ICWirecard', 'paymentState', {'received' => $hFormValues->{'paymentState'}, 'expected' => 'SUCCESS', 'or' => 'PENDING'});
     return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'paymentState'};
   }
 
