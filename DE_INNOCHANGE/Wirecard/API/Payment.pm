@@ -121,6 +121,10 @@ sub InitTransaction {
   my $logoUrl = _getShopLogoUrl($Shop);
   $Params{'imageUrl'} = $logoUrl if (defined $logoUrl);
 
+  # display text
+  my $displayText = $PaymentMethod->get('displayText');
+  $Params{'displayText'} = $displayText if (defined $displayText);
+
   # consumerMerchantCrmId
   my $BillingAddress = $Container->parent->get('BillingAddress');
   $Params{'consumerMerchantCrmId'} = md5_hex($BillingAddress->get('EMail'));

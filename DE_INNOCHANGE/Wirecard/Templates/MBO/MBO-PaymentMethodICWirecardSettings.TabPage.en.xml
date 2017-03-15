@@ -35,6 +35,8 @@ plugin if you do not agree to the terms of use!
     <Translation Keyword="ICBubbleHelpDuplicateRequest">Checking duplicate requests made by your consumer.</Translation>
     <Translation Keyword="ICMaxRetries">Max. retries</Translation>
     <Translation Keyword="ICBubbleHelpMaxRetries">Maximum number of payment attempts regarding a certain order.</Translation>
+    <Translation Keyword="ICDisplayText">Text on payment page</Translation>
+    <Translation Keyword="ICBubbleHelpDisplayText">Text displayed during the payment process, i.e. "Thank you for ordering in xy-shop".</Translation>
     <Translation Keyword="ICdisplayType">Display of payment pages</Translation>
     <Translation Keyword="ICcustomerChoice">let customer choose</Translation>
     <Translation Keyword="ICPopup">popup window</Translation>

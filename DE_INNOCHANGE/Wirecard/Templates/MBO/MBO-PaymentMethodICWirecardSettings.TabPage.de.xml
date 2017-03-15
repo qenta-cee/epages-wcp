@@ -35,6 +35,8 @@ plugin if you do not agree to the terms of use!
     <Translation Keyword="ICBubbleHelpDuplicateRequest">Überprüfung auf mehrfache Anfragen seitens Ihres Kunden.</Translation>
     <Translation Keyword="ICMaxRetries">Max. Versuche</Translation>
     <Translation Keyword="ICBubbleHelpMaxRetries">Max. möglichen Bezahlversuche eines bestimmten Auftrags.</Translation>
+    <Translation Keyword="ICDisplayText">Text auf der Bezahlseite</Translation>
+    <Translation Keyword="ICBubbleHelpDisplayText">Text, der während des Bezahlprozesses angezeigt wird, z.B. "Danke für Ihre Bestellung in xy-Shop".</Translation>
     <Translation Keyword="ICdisplayType">Anzeige der Bezahlseiten</Translation>
     <Translation Keyword="ICcustomerChoice">Kunde wählt aus</Translation>
     <Translation Keyword="ICPopup">Popup-Fenster</Translation>

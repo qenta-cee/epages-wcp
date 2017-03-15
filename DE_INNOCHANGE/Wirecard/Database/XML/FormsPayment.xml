@@ -24,6 +24,7 @@ plugin if you do not agree to the terms of use!
       <FormField Name="serviceURL"            Type="string"  Mandatory="1" />
       <FormField Name="paymentType"           Type="string"  Mandatory="1" />
       <FormField Name="maxRetries"            Type="string" />
+      <FormField Name="displayText"           Type="string" />
       <FormField Name="sendShippingData"      Type="boolean" />
       <FormField Name="sendBillingData"       Type="boolean" />
       <FormField Name="sendBasketData"        Type="boolean" />

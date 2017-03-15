@@ -152,6 +152,15 @@ plugin if you do not agree to the terms of use!
         </span>
     </td>
     </tr>
+    <tr#IF(#FormError_displayText) class="DialogError"#ENDIF>
+    <td class="InputLabellingWide PaddingLeft">{ICDisplayText}</td>
+    <td><input type="text" name="displayText" value="#displayText" class="TextHalfSize ep-js" data-js="ep.uiInput()" />
+      <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+      <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpDisplayText}
+        </span>
+    </td>
+    </tr>
     <tr#IF(#FormError_sendShippingData) class="DialogError"#ENDIF>
     <td class="InputLabellingWide PaddingLeft">{ICsendShippingData}<span class="MandatoryStar">{MandatoryStar}</span></td>
     <td>
