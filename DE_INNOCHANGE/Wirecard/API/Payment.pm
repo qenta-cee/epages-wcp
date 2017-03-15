@@ -71,6 +71,7 @@ sub InitTransaction {
   Error('NO_WIRECARD', {'ObjectPath' => $pli->pathString}) unless(defined($PaymentMethod) && $PaymentMethod->instanceOf('PaymentMethodICWirecard'));
 
   my $Shop = $Container->getSite;
+  my $Locale = $Shop->siteLocale($Container->get('LocaleID'));
   my $LanguageID = $Container->get('LanguageID');
   my $urlType = $IsMobile  ?  'mobile' : 'sf';
   # Shopname in customerStatement must not be longer then 9 chars
@@ -88,6 +89,7 @@ sub InitTransaction {
     'customerStatement'       => $customerStatement . ' ' .$orderReference,
     'successUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentSuccessICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
     'failureUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentFailureICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
+    'pendingUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentPendingICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
     'confirmUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentConfirmICWirecard', 'ViewAction' => 'SendPaymentConfirmICWirecardResponse'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
     'cancelUrl'               => BuildShopUrl($Container->parent, {}, {'UseSSL' => 1, 'UseObjectPath' => 0, 'Type' => 'sf/mobile'}), # back to basket page
     'consumerUserAgent'       => $UserAgent,
@@ -175,7 +177,45 @@ sub InitTransaction {
 
   # basketData
   if ($PaymentMethod->get('sendBasketData')) {
-    # TODO
+    # get all Line Items
+    my $LineItems = $Container->get('Positions');
+    my $LineItem;
+    my $count = 0;
+    foreach $LineItem (@$LineItems) {
+      my $TaxRate = $LineItem->get('TaxRate') * 100;
+      if ($count == 0) {
+        # first LineItem is Paymentmethod (Wirecard)
+        $count++;
+      }
+      elsif (defined $LineItem->get('BasePrice') && defined $LineItem->get('Quantity')) {
+        # do not include other LineItems then products
+        # BasePrice is unit price
+        my $TaxAmount = $Locale->roundMoney($LineItem->get('BasePrice') / (100 + $TaxRate) * $TaxRate, $pli->get('CurrencyID'));
+        my $NetAmount = $Locale->roundMoney($LineItem->get('BasePrice') - $TaxAmount, $pli->get('CurrencyID'));
+        $Params{'basketItem'. $count .'name'} = $LineItem->get('Name');
+        $Params{'basketItem'. $count .'articleNumber'} = $LineItem->get('Name');
+        $Params{'basketItem'. $count .'quantity'} = $LineItem->get('Quantity');
+        $Params{'basketItem'. $count .'unitGrossAmount'} = $Locale->roundMoney($LineItem->get('BasePrice'), $pli->get('CurrencyID'));
+        $Params{'basketItem'. $count .'unitNetAmount'} = $NetAmount;
+        $Params{'basketItem'. $count .'unitTaxAmount'} = $TaxAmount;
+        $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
+        $count++;
+      }
+      elsif (defined $LineItem->get('Quantity')) {
+        # shipping
+        my $TaxAmount = $Locale->roundMoney($LineItem->get('LineItemPrice') / (100 + $TaxRate) * $TaxRate, $pli->get('CurrencyID'));
+        my $NetAmount = $Locale->roundMoney($LineItem->get('LineItemPrice') - $TaxAmount, $pli->get('CurrencyID'));
+        $Params{'basketItem'. $count .'name'} = $LineItem->get('Name');
+        $Params{'basketItem'. $count .'articleNumber'} = 'Shipping';
+        $Params{'basketItem'. $count .'quantity'} = $LineItem->get('Quantity');
+        $Params{'basketItem'. $count .'unitGrossAmount'} = $Locale->roundMoney($LineItem->get('LineItemPrice'), $pli->get('CurrencyID'));
+        $Params{'basketItem'. $count .'unitNetAmount'} = $NetAmount;
+        $Params{'basketItem'. $count .'unitTaxAmount'} = $TaxAmount;
+        $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
+        $count++;
+      }
+    }
+    $Params{'basketItems'} = $count - 1;
   }
 
   # calculate finger print
