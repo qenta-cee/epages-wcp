@@ -47,8 +47,8 @@ sub new {
     my $self = __PACKAGE__->SUPER::new(
         %options,
         'CartridgeDirectory' => 'DE_INNOCHANGE/Wirecard',
-        'Version'            => '6.15.3',
-        'Patches'            => [],
+        'Version'            => '6.17.52',
+        'Patches'            => ['6.15.3'],
     );
     return bless $self, $class;
 }

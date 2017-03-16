@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="iso-8859-1"?>
 <!--
 Shop System Plugins - Terms of use
 This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
@@ -16,23 +16,10 @@ plugin into the shopsystem the customer agrees to the terms of use. Please do no
 plugin if you do not agree to the terms of use!
 -->
 <epages>
-  <Object Alias="PaymentTypes" reference="1">
-    <PaymentType
-        Alias="ICWirecard"
-        MethodClass="PaymentMethodICWirecard"
-        LineItemClass="LineItemPaymentICWirecard"
-        IsHirePurchaseSupported="0"
-        CanPaymentOnBasket="1"
-        CanPaymentOnOrder="0"
-        CanTransactionAuth="1"
-        CanTransactionCapture="1"
-        CanTransactionTest="0"
-        IsCustomerRequired="1"
-        Icon="BO/icons/icwirecard_icon_s.png"
-        DefaultImage="icwirecard.png"
-        Position="1200"
-        delete="1">
-    </PaymentType>
-  </Object>
-  <ViewAction reference="1" Path="/Classes/Shop/Actions/MBO-SearchICWirecardTransactions" PaymentType="/PaymentTypes/ICWirecard" />
+  <Language Language="en">
+    <Translation Keyword="PendingHeader">The financial institution has not yet approved your payment</Translation>
+    <Translation Keyword="PendingText">Payment verification is pending, confirmation will be sent later.</Translation>
+    <Translation Keyword="OrderNo">Your order no. is:</Translation>
+    <Translation Keyword="DoNow">What would you like to do next?</Translation>
+  </Language>
 </epages>

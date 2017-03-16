@@ -20,13 +20,17 @@ plugin if you do not agree to the terms of use!
     <p>#consumerMessage</p>
   #ENDIF
 
-  #IF(#FUNCTION("INSTANCEOF", #PaymentObject.Object, "Basket"))
-  <p>{PaymentFailedInfoOnBasket}<br />
-    <a href="?ObjectID=#PaymentObject.ID#IF(#Shop.OrderProcess)&amp;ViewAction=ViewMultiCheckoutPayment#ENDIF">{ShowBasket}</a>
-  </p>
+  #IF(#DEFINED(#PaymentObject))
+    #IF(#FUNCTION("INSTANCEOF", #PaymentObject.Object, "Basket"))
+    <p>{PaymentFailedInfoOnBasket}<br />
+      <a href="?ObjectID=#PaymentObject.ID#IF(#Shop.OrderProcess)&amp;ViewAction=ViewMultiCheckoutPayment#ENDIF">{ShowBasket}</a>
+    </p>
+    #ELSE
+    <p>{PaymentFailedInfoOnOrder}<br />
+      <a href="?ObjectID=#PaymentObject.ID[url]">{ShowOrder}</a>
+    </p>
+    #ENDIF
   #ELSE
-  <p>{PaymentFailedInfoOnOrder}<br />
-    <a href="?ObjectID=#PaymentObject.ID[url]">{ShowOrder}</a>
-  </p>
+    <p>#ICWirecardResultMessage</p>
   #ENDIF
 </div>

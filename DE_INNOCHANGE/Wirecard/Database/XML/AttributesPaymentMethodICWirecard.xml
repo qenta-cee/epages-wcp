@@ -23,10 +23,16 @@ plugin if you do not agree to the terms of use!
         <Attribute Alias="customerId"            Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
         <Attribute Alias="shopId"                Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
         <Attribute Alias="secret"                Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="serviceURL"            Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
         <Attribute Alias="paymentType"           Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
         <Attribute Alias="OrderStatusAuthorized" Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
         <Attribute Alias="OrderStatusSettled"    Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
-        <Attribute Alias="sendAddressData"       Type="Boolean" IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="maxRetries"            Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="displayText"           Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="sendShippingData"      Type="Boolean" IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="sendBillingData"       Type="Boolean" IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="sendBasketData"        Type="Boolean" IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="duplicateRequest"      Type="Boolean" IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
         <Attribute Alias="displayType"           Type="Integer" IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
       </Object>
     </Class>

@@ -1,9 +1,9 @@
 #========================================================================================
-# §package      DE_INNOCHANGE::Wirecard::UI::PaymentMethodICWirecard
-# §base         DE_EPAGES::Payment::UI::PaymentMethod
-# §state        public
+# ï¿½package      DE_INNOCHANGE::Wirecard::UI::PaymentMethodICWirecard
+# ï¿½base         DE_EPAGES::Payment::UI::PaymentMethod
+# ï¿½state        public
 #----------------------------------------------------------------------------------------
-# §description  UI functions for class PaymentMethodICWirecard
+# ï¿½description  UI functions for class PaymentMethodICWirecard
 #
 # Shop System Plugins - Terms of use
 # This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
@@ -33,14 +33,14 @@ use DE_INNOCHANGE::Wirecard::API::Constants qw (
 );
 
 #========================================================================================
-# §function     ViewSettings
-# §state        public
+# ï¿½function     ViewSettings
+# ï¿½state        public
 #----------------------------------------------------------------------------------------
-# §syntax       $Package->ViewSettings($Servlet);
+# ï¿½syntax       $Package->ViewSettings($Servlet);
 #----------------------------------------------------------------------------------------
-# §description  view payment method settings page
+# ï¿½description  view payment method settings page
 #----------------------------------------------------------------------------------------
-# §input        $Servlet | servlet | object
+# ï¿½input        $Servlet | servlet | object
 #========================================================================================
 sub ViewSettings {
   my $self = shift;
@@ -58,14 +58,14 @@ sub ViewSettings {
 }
 
 #========================================================================================
-# §function     SaveSettings
-# §state        public
+# ï¿½function     SaveSettings
+# ï¿½state        public
 #----------------------------------------------------------------------------------------
-# §syntax       $Package->SaveSettings($Servlet);
+# ï¿½syntax       $Package->SaveSettings($Servlet);
 #----------------------------------------------------------------------------------------
-# §description  save the payment method settings
+# ï¿½description  save the payment method settings
 #----------------------------------------------------------------------------------------
-# §input        $Servlet | servlet | object
+# ï¿½input        $Servlet | servlet | object
 #========================================================================================
 sub SaveSettings {
   my $self = shift;
@@ -89,7 +89,8 @@ sub SaveSettings {
   # set sendAddressData to 1 if payment type is invoice
   my $PaymentMethod = $Servlet->object;
   if ($PaymentMethod->get('paymentType') eq WC_PAYMENT_TYPE_INVOICE) {
-    $PaymentMethod->set({'sendAddressData' => 1});
+    $PaymentMethod->set({'sendBillingData' => 1});
+    $PaymentMethod->set({'sendShippingData' => 1});
   }
   return;
 }

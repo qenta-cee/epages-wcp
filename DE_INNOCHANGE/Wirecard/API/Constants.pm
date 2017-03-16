@@ -1,8 +1,8 @@
 #========================================================================================
-# §package      DE_INNOCHANGE::Wirecard::API::Constants
-# §state        public
+# Â§package      DE_INNOCHANGE::Wirecard::API::Constants
+# Â§state        public
 #----------------------------------------------------------------------------------------
-# §description  constants for wirecard
+# Â§description  constants for wirecard
 #
 # Shop System Plugins - Terms of use
 # This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
@@ -42,28 +42,25 @@ use constant WC_PAYMENT_TYPE_INVOICE => 'INVOICE';
 our %WC_PAYMENT_TYPES = (
   #'SELECT'                => '',
   'BANCONTACT_MISTERCASH' => 'Bancontact/Mister Cash',
-  'C2P'                   => 'CLICK2PAY',
   'CCARD'                 => 'Credit Card',
   'EKONTO'                => 'eKonto',
-  'ELV'                   => 'Electronic Funds Transfer',
+  'SEPA-DD'               => 'SEPA Direct Debit',
   'EPS'                   => 'EPS e-payment',
   'GIROPAY'               => 'giropay',
   'IDL'                   => 'iDEAL',
   'INSTALLMENT'           => 'Installment by payolution or RatePAY',
-  'INSTANTBANK'           => 'Trustly',
   'INVOICE'               => 'Invoice by payolution or RatePAY',
   'MAESTRO'               => 'Maestro SecureCode',
   'MONETA'                => 'moneta.ru',
-  'MPASS'                 => 'mpass',
   'PRZELEWY24'            => 'Przelewy24',
   'PAYPAL'                => 'PayPal',
   'PBX'                   => 'Paybox',
   'POLI'                  => 'POLi payments',
   'PSC'                   => 'Paysafecard',
   'QUICK'                 => 'Quick',
-  'SKRILLDIRECT'          => 'Skrill Direct',
   'SKRILLWALLET'          => 'Skrill Digital Wallet',
-  'SOFORTUEBERWEISUNG'    => 'sofort.com'
+  'SOFORTUEBERWEISUNG'    => 'sofort.com',
+  'TRUSTLY'               => 'Trustly'
 );
 
 use constant TRANS_TYPE_AUTHORIZED => 'authorized';
