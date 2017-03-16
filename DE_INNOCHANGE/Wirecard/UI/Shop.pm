@@ -53,12 +53,32 @@ sub PaymentSuccessICWirecard {
 }
 
 #========================================================================================
+# §function     PaymentPendingICWirecard
+# §state        public
+#----------------------------------------------------------------------------------------
+# §syntax       $Package->PaymentPendingICWirecard($Servlet);
+#----------------------------------------------------------------------------------------
+# §description  customer is redirected to this url in case of pending
+#----------------------------------------------------------------------------------------
+# §input        $Servlet | servlet | object
+#========================================================================================
+sub PaymentPendingICWirecard {
+  my $self = shift;
+  my ($Servlet) = @_;
+
+  my $hFormValues = _getFormValues($Servlet);
+  LogPayment('ICWirecard', 'PaymentPendingICWirecard', $hFormValues);
+
+  return _PaymentSuccess($Servlet, $hFormValues);
+}
+
+#========================================================================================
 # §function     PaymentConfirmICWirecard
 # §state        public
 #----------------------------------------------------------------------------------------
 # §syntax       $Package->PaymentConfirmICWirecard($Servlet);
 #----------------------------------------------------------------------------------------
-# §description  server to server notification about successful payment
+# §description  server to server notification about successful or pending payment
 #----------------------------------------------------------------------------------------
 # §input        $Servlet | servlet | object
 #========================================================================================
@@ -70,6 +90,7 @@ sub PaymentConfirmICWirecard {
   LogPayment('ICWirecard', 'PaymentConfirmICWirecard', $hFormValues);
 
   my $Order = _PaymentSuccess($Servlet, $hFormValues, 1);
+
   if (!defined $Order) { # ensure an error message is set in error case
     my $errorMessage = $Servlet->vars('ICWirecardResultMessage');
     $Servlet->vars('ICWirecardResultMessage', 'internal error') unless defined($errorMessage);
@@ -108,7 +129,7 @@ sub SendPaymentConfirmICWirecardResponse {
 #----------------------------------------------------------------------------------------
 # §syntax       _PaymentSuccess($Servlet, $hFormValues);
 #----------------------------------------------------------------------------------------
-# §description  handle successful payment
+# §description  handle successful and pending payment
 #----------------------------------------------------------------------------------------
 # §input        $Servlet | servlet | object
 # §input        $hFormValues | form values | ref.hash
@@ -137,20 +158,29 @@ sub _PaymentSuccess {
   # create order
   my $Order = $BasketOrder->instanceOf('Basket')  ?  DE_EPAGES::Order::UI::Basket->doBasket2Order($Servlet, $BasketOrder) : $BasketOrder;
 
-  my $Status = undef;
-  if ($PaymentLineItem->get('TransactionType')) {
-    # authorization only
-    $Status = $PaymentLineItem->get('PaymentMethod')->get('OrderStatusAuthorized');
-  }
-  else {
-    # settle
-    $Status = $PaymentLineItem->get('PaymentMethod')->get('OrderStatusSettled');
+  my $Status = 'PendingOn';
+  if ($hFormValues->{'paymentState'} eq 'SUCCESS') {
+    if ($PaymentLineItem->get('TransactionType')) {
+      # authorization only
+      $Status = $PaymentLineItem->get('PaymentMethod')->get('OrderStatusAuthorized');
+    }
+    else {
+      # settle
+      $Status = $PaymentLineItem->get('PaymentMethod')->get('OrderStatusSettled');
+    }
   }
   my %OrderUpdate = ();
   $OrderUpdate{$Status} = GetCurrentDBHandle->currentDateTime() if (defined $Status);
   $OrderUpdate{'Comment'} = join("\n", map { "$_: $hFormValues->{$_}" } grep { !($_ ~~ @PARAMS_NO_COMMENT) } keys %$hFormValues);
   $Order->set(\%OrderUpdate);
-  return $Order; # show order confirmation page
+
+  if ($hFormValues->{'paymentState'} eq 'SUCCESS') {
+    return $Order; # show order confirmation page
+  }
+  # confirmation page with pending
+  $Servlet->vars('Object', $Order);
+  $Servlet->vars('ViewAction', 'ViewPaymentICWirecardPending');
+  return;
 }
 
 #========================================================================================
@@ -181,19 +211,25 @@ sub _TestSuccessParameters {
     return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'fingerprintMismatch'};
   }
 
-  # check amount/currency
-  if (fcmp($hFormValues->{'amount'}, $PaymentLineItem->get('Amount')) != 0) {
-    LogPayment('ICWirecard', 'amount mismatch', {'received' => $hFormValues->{'amount'}, 'expected' => $PaymentLineItem->get('Amount')});
-    return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'amountMismatch'};
-  }
-  if ($hFormValues->{'currency'} ne $PaymentLineItem->get('CurrencyID')) {
-    LogPayment('ICWirecard', 'currency mismatch', {'received' => $hFormValues->{'currency'}, 'expected' => $PaymentLineItem->get('CurrencyID')});
-    return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'currencyMismatch'};
+  my $TransactionType = 'PendingOn';
+
+  # no amount, currency check for pending
+  if ($hFormValues->{'paymentState'} eq 'SUCCESS') {
+    # check amount/currency
+    if (fcmp($hFormValues->{'amount'}, $PaymentLineItem->get('Amount')) != 0) {
+      LogPayment('ICWirecard', 'amount mismatch', {'received' => $hFormValues->{'amount'}, 'expected' => $PaymentLineItem->get('Amount')});
+      return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'amountMismatch'};
+    }
+    if ($hFormValues->{'currency'} ne $PaymentLineItem->get('CurrencyID')) {
+      LogPayment('ICWirecard', 'currency mismatch', {'received' => $hFormValues->{'currency'}, 'expected' => $PaymentLineItem->get('CurrencyID')});
+      return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'currencyMismatch'};
+    }
+    $TransactionType = $PaymentLineItem->get('TransactionType') ? TRANS_TYPE_AUTHORIZED : TRANS_TYPE_SETTLED;
   }
 
   # check payment state
-  if ($hFormValues->{'paymentState'} ne 'SUCCESS') {
-    LogPayment('ICWirecard', 'paymentState', {'received' => $hFormValues->{'paymentState'}, 'expected' => 'SUCCESS'});
+  if ($hFormValues->{'paymentState'} ne 'SUCCESS' && $hFormValues->{'paymentState'} ne 'PENDING') {
+    LogPayment('ICWirecard', 'paymentState', {'received' => $hFormValues->{'paymentState'}, 'expected' => 'SUCCESS', 'or' => 'PENDING'});
     return {'PaymentLineItem' => $PaymentLineItem, 'Error' => 'paymentState'};
   }
 
@@ -202,7 +238,7 @@ sub _TestSuccessParameters {
   $Values{'Message'}        = $hFormValues->{'avsResponseMessage'} if (isValid($hFormValues->{'avsResponseMessage'}));
   $Values{'TransID'}        = $hFormValues->{'orderNumber'}        if (isValid($hFormValues->{'orderNumber'}));
   $Values{'InternalMethod'} = $hFormValues->{'paymentType'}        if (isValid($hFormValues->{'paymentType'}));
-  $Values{'TransStatus'}    = $PaymentLineItem->get('TransactionType')  ?  TRANS_TYPE_AUTHORIZED : TRANS_TYPE_SETTLED;
+  $Values{'TransStatus'}    = $TransactionType;
   $Values{'TransTime'}      = GetCurrentDBHandle()->currentDateTime;
   LogPayment('ICWirecard', 'callback values', \%Values);
 
@@ -294,6 +330,16 @@ sub PaymentFailureICWirecard {
     'TransStatus' => TRANS_TYPE_DECLINED,
     'TransTime'   => GetCurrentDBHandle()->currentDateTime
   });
+
+  # save failed payment to ordertable
+  my $BasketOrder = $PaymentLineItem->container->parent;
+  my $Order = $BasketOrder->instanceOf('Basket') ? DE_EPAGES::Order::UI::Basket->doBasket2Order($Servlet, $BasketOrder) : $BasketOrder;
+  my $Status = 'CancelledOn';
+  my %OrderUpdate = ();
+  $OrderUpdate{$Status} = GetCurrentDBHandle->currentDateTime() if (defined $Status);
+  $OrderUpdate{'Comment'} = $hFormValues->{'consumerMessage'};
+  $Order->set(\%OrderUpdate);
+
   $Servlet->vars('PaymentObject', $PaymentLineItem->container->parent->tleHash);
   $Servlet->vars('consumerMessage', $hFormValues->{'consumerMessage'});
   $Servlet->vars('ViewAction', 'ViewPaymentICWirecardError');

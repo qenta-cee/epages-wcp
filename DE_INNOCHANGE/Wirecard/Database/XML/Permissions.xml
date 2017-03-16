@@ -30,7 +30,9 @@ plugin if you do not agree to the terms of use!
     <RoleAction Class="Shop" Action="PaymentSuccessICWirecard"             delete="1" />
     <RoleAction Class="Shop" Action="PaymentFailureICWirecard"             delete="1" />
     <RoleAction Class="Shop" Action="PaymentConfirmICWirecard"             delete="1" />
+    <RoleAction Class="Shop" Action="PaymentPendingICWirecard"             delete="1" />
     <RoleAction Class="Shop" Action="SendPaymentConfirmICWirecardResponse" delete="1" />
     <RoleAction Class="Shop" Action="ViewPaymentICWirecardError"           delete="1" />
+    <RoleAction Class="Shop" Action="ViewPaymentICWirecardPending"         delete="1" />
   </Role>
 </epages>

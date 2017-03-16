@@ -1,8 +1,8 @@
 #========================================================================================
-# §package      DE_INNOCHANGE::Wirecard::Hooks::Attribute
-# §state        public
+# Â§package      DE_INNOCHANGE::Wirecard::Hooks::Attribute
+# Â§state        public
 #----------------------------------------------------------------------------------------
-# §description  provide attributes configurable in PBO
+# Â§description  provide attributes configurable in PBO
 #
 # Shop System Plugins - Terms of use
 # This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
@@ -26,14 +26,14 @@ use DE_EPAGES::Object::API::Factory qw (LoadObjectByPath GetRootObjectID);
 use DE_EPAGES::ThirdPartyConfig::API::Constants qw (ATTRIBUTES_CATEGORY_PAYMENT);
 
 #========================================================================================
-# §function     OnGetThirdPartyConfigAttributes
-# §state        public
+# Â§function     OnGetThirdPartyConfigAttributes
+# Â§state        public
 #----------------------------------------------------------------------------------------
-# §syntax       OnGetThirdPartyConfigAttributes(\%Params);
+# Â§syntax       OnGetThirdPartyConfigAttributes(\%Params);
 #----------------------------------------------------------------------------------------
-# §description  provide attributes configurable in PBO
+# Â§description  provide attributes configurable in PBO
 #----------------------------------------------------------------------------------------
-# §input        $hParams | hook params | ref.hash
+# Â§input        $hParams | hook params | ref.hash
 #========================================================================================
 sub OnGetThirdPartyConfigAttributes {
   my ($hParams) = @_;
@@ -48,7 +48,9 @@ sub OnGetThirdPartyConfigAttributes {
     'SectionName' => $PaymentType->get('NameOrAlias', $hParams->{'LanguageID'}),
     'Attributes' => [
       {'ObjectID' => $PaymentType->id, 'AttributeAlias' => 'Logging'},
-      {'ObjectID' => $RootObjectID,    'AttributeAlias' => 'ICWirecard_InitTransactionURL'}
+      {'ObjectID' => $RootObjectID,    'AttributeAlias' => 'ICWirecard_InitTransactionURL'},
+      {'ObjectID' => $RootObjectID,    'AttributeAlias' => 'ICWirecard_MerchantRegisterURL'},
+      {'ObjectID' => $RootObjectID,    'AttributeAlias' => 'ICWirecard_GeneralInformationURL'}
     ]
   });
 

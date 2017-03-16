@@ -39,29 +39,76 @@ plugin if you do not agree to the terms of use!
   <p>{SetPaymentMethodInvisible}</p>
 </div>
 #ENDIF
+
+#IF (#DEFINED(#System.ICWirecard_MerchantRegisterURL))
+  <div class="DialogMessage MessageHint BottomMargin MessageBox">
+    <h3>{Info0}</h3>
+    <p>
+      {Info1}
+      <br/>
+      <a class="DialogAction" rel="noreferrer" href="#DEREFER(#System.ICWirecard_MerchantRegisterURL)" onclick="openWindow('#DEREFER(#System.ICWirecard_MerchantRegisterURL)', '', '');return false;">{RegisterURL}</a>
+    </p>
+  </div>
+#ENDIF
+
+  #IF (#DEFINED(#System.ICWirecard_GeneralInformationURL))
+  <div class="DialogMessage MessageHint BottomMargin MessageBox">
+    <h3>{InfoHeader}</h3>
+    <p>
+      {InfoDescription}
+      <br/>
+      <a class="DialogAction" rel="noreferrer" href="#DEREFER(#System.ICWirecard_GeneralInformationURL)" onclick="openWindow('#DEREFER(#System.ICWirecard_GeneralInformationURL)', '', '');return false;">{InformationURL}</a>
+    </p>
+  </div>
+  #ENDIF
+
   <table class="FormGrid">
     <tr#IF(#FormError_customerId) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">Customer ID<span class="MandatoryStar">{MandatoryStar}</span></td>
-      <td><input type="text" name="customerId" value="#customerId" class="Mandatory TextHalfSize ep-js" data-js="ep.uiInput()" /></td>
+      <td><input type="text" name="customerId" value="#customerId" class="Mandatory TextHalfSize ep-js" data-js="ep.uiInput()" />
+        <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+        <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleCustomerId}
+        </span>
+      </td>
     </tr>
     <tr#IF(#FormError_shopId) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">Shop ID</td>
-      <td><input type="text" name="shopId" value="#shopId" class="TextHalfSize ep-js" data-js="ep.uiInput()" /></td>
+      <td><input type="text" name="shopId" value="#shopId" class="TextHalfSize ep-js" data-js="ep.uiInput()" />
+        <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+        <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpShopId}
+        </span>
+      </td>
     </tr>
     <tr#IF(#FormError_secret) class="DialogError" #ENDIF>
       <td class="InputLabellingWide PaddingLeft">Secret<span class="MandatoryStar">{MandatoryStar}</span></td>
-      <td><input type="text" name="secret" value="#secret" class="Mandatory TextExtended ep-js" data-js="ep.uiInput()" /></td>
+      <td><input type="text" name="secret" value="#secret" class="Mandatory TextExtended ep-js" data-js="ep.uiInput()" />
+        <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+        <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpSecret}
+        </span>
+      </td>
     </tr>
     <tr#IF(#FormError_paymentType) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">{ICpaymentType}<span class="MandatoryStar">{MandatoryStar}</span></td>
       <td>
-        <select class="Text ep-js" data-js="ep.uiInput()" name="paymentType" onchange="activateSendAddressRadio(this);">
+        <select class="Text ep-js" data-js="ep.uiInput()" name="paymentType">
         <option value="#WC_PAYMENT_TYPE_SELECT">{ICcustomerChoice}</option>
         #LOOP(#WC_PAYMENT_TYPES)
           <option value="#ID"#IF(#ID EQ #paymentType) selected="selected"#ENDIF>#Name</option>
         #ENDLOOP
         </select>
       </td>
+    </tr>
+    <tr#IF(#FormError_serviceURL) class="DialogError" #ENDIF>
+    <td class="InputLabellingWide PaddingLeft">{ICServiceUrl}<span class="MandatoryStar">{MandatoryStar}</span></td>
+    <td><input type="text" name="serviceURL" value="#serviceURL" class="Mandatory TextExtended ep-js" data-js="ep.uiInput()" />
+      <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+      <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpServiceUrl}
+        </span>
+    </td>
     </tr>
     <tr#IF(#FormError_TransactionType) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">{TransactionType}<span class="MandatoryStar">{MandatoryStar}</span></td>
@@ -96,15 +143,82 @@ plugin if you do not agree to the terms of use!
         </select>
       </td>
     </tr>
-    <tr#IF(#FormError_sendAddressData) class="DialogError"#ENDIF>
-      <td class="InputLabellingWide PaddingLeft">{ICsendAddressData}<span class="MandatoryStar">{MandatoryStar}</span></td>
-      <td>
-        <input class="ep-js" data-js="ep.uiInput()" type="radio" name="sendAddressData" id="sendAddressData1" value="1"#IF(#sendAddressData) checked="checked" #ENDIF #IF(#paymentType EQ #WC_PAYMENT_TYPE_INVOICE) disabled="disabled"#ENDIF/>
-        <label for="sendAddressData1">{yes}</label>
-        <input class="ep-js" data-js="ep.uiInput()" type="radio" name="sendAddressData" id="sendAddressData0" value="0"#IF(NOT #sendAddressData) checked="checked" #ENDIF  #IF(#paymentType EQ #WC_PAYMENT_TYPE_INVOICE) disabled="disabled"#ENDIF/>
-        <label for="sendAddressData0">{no}</label>
-        </select>
-      </td>
+    <tr#IF(#FormError_maxRetries) class="DialogError"#ENDIF>
+    <td class="InputLabellingWide PaddingLeft">{ICMaxRetries}</td>
+    <td><input type="text" name="maxRetries" value="#maxRetries" class="TextHalfSize ep-js" data-js="ep.uiInput()" />
+      <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+      <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpMaxRetries}
+        </span>
+    </td>
+    </tr>
+    <tr#IF(#FormError_displayText) class="DialogError"#ENDIF>
+    <td class="InputLabellingWide PaddingLeft">{ICDisplayText}</td>
+    <td><input type="text" name="displayText" value="#displayText" class="TextHalfSize ep-js" data-js="ep.uiInput()" />
+      <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+      <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpDisplayText}
+        </span>
+    </td>
+    </tr>
+    <tr#IF(#FormError_sendShippingData) class="DialogError"#ENDIF>
+    <td class="InputLabellingWide PaddingLeft">{ICsendShippingData}<span class="MandatoryStar">{MandatoryStar}</span></td>
+    <td>
+      <input class="ep-js" data-js="ep.uiInput()" type="radio" name="sendShippingData" id="sendShippingData1" value="1"#IF(#sendShippingData) checked="checked" #ENDIF #IF(#paymentType EQ #WC_PAYMENT_TYPE_INVOICE) disabled="disabled"#ENDIF/>
+      <label for="sendShippingData1">{yes}</label>
+      <input class="ep-js" data-js="ep.uiInput()" type="radio" name="sendShippingData" id="sendShippingData0" value="0"#IF(NOT #sendShippingData) checked="checked" #ENDIF #IF(#paymentType EQ #WC_PAYMENT_TYPE_INVOICE) disabled="disabled"#ENDIF/>
+      <label for="sendShippingData0">{no}</label>
+      </select>
+      <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+      <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpShippingData}
+        </span>
+    </td>
+
+    </tr>
+    <tr#IF(#FormError_sendBillingData) class="DialogError"#ENDIF>
+    <td class="InputLabellingWide PaddingLeft">{ICsendBillingData}<span class="MandatoryStar">{MandatoryStar}</span></td>
+    <td>
+      <input class="ep-js" data-js="ep.uiInput()" type="radio" name="sendBillingData" id="sendBillingData1" value="1"#IF(#sendBillingData) checked="checked" #ENDIF #IF(#paymentType EQ #WC_PAYMENT_TYPE_INVOICE) disabled="disabled"#ENDIF/>
+      <label for="sendBillingData1">{yes}</label>
+      <input class="ep-js" data-js="ep.uiInput()" type="radio" name="sendBillingData" id="sendBillingData0" value="0"#IF(NOT #sendBillingData) checked="checked" #ENDIF #IF(#paymentType EQ #WC_PAYMENT_TYPE_INVOICE) disabled="disabled"#ENDIF/>
+      <label for="sendBillingData0">{no}</label>
+      </select>
+      <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+      <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpBillingData}
+        </span>
+    </td>
+
+    </tr>
+    <tr#IF(#FormError_sendBaskingData) class="DialogError"#ENDIF>
+    <td class="InputLabellingWide PaddingLeft">{ICsendBasketData}<span class="MandatoryStar">{MandatoryStar}</span></td>
+    <td>
+      <input class="ep-js" data-js="ep.uiInput()" type="radio" name="sendBasketData" id="sendBasketData1" value="1"#IF(#sendBasketData) checked="checked" #ENDIF/>
+      <label for="sendBasketData1">{yes}</label>
+      <input class="ep-js" data-js="ep.uiInput()" type="radio" name="sendBasketData" id="sendBasketData0" value="0"#IF(NOT #sendBasketData) checked="checked" #ENDIF/>
+      <label for="sendBasketData0">{no}</label>
+      </select>
+      <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+      <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpBasketData}
+        </span>
+    </td>
+
+    </tr>
+    <tr#IF(#FormError_duplicateRequest) class="DialogError"#ENDIF>
+    <td class="InputLabellingWide PaddingLeft">{ICduplicateRequest}</td>
+    <td>
+      <input class="ep-js" data-js="ep.uiInput()" type="radio" name="duplicateRequest" id="duplicateRequest1" value="1"#IF(#duplicateRequest) checked="checked" #ENDIF/>
+      <label for="duplicateRequest1">{yes}</label>
+      <input class="ep-js" data-js="ep.uiInput()" type="radio" name="duplicateRequest" id="duplicateRequest0" value="0"#IF(NOT #duplicateRequest) checked="checked" #ENDIF/>
+      <label for="duplicateRequest0">{no}</label>
+      </select>
+      <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+      <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpDuplicateRequest}
+        </span>
+    </td>
     </tr>
       <tr>
         <td class="InputLabellingWide PaddingLeft">{ICdisplayType}<span class="MandatoryStar">{MandatoryStar}</span></td>
@@ -134,22 +248,3 @@ plugin if you do not agree to the terms of use!
 </div>
 #ENDWITH_ERROR
 </form>
-
-<script type="text/javascript">
-function activateSendAddressRadio(el) {
-  var sendAddressRadio1 = document.getElementById('sendAddressData1');
-  var sendAddressRadio0 = document.getElementById('sendAddressData0');
-  if (el.options[el.selectedIndex].value == "#WC_PAYMENT_TYPE_INVOICE[js]") {
-    sendAddressRadio1.disabled = true;
-    sendAddressRadio1.checked  = true;
-    sendAddressRadio0.disabled = true;
-    sendAddressRadio0.checked  = false;
-  }
-  else {
-    sendAddressRadio1.disabled = false;
-    sendAddressRadio1.checked  = #IF(#sendAddressData)true#ELSE#SPACE[0]false#ENDIF;
-    sendAddressRadio0.disabled = false;
-    sendAddressRadio0.checked  = #IF(#sendAddressData)false#ELSE#SPACE[0]true#ENDIF;
-  }
-}
-</script>

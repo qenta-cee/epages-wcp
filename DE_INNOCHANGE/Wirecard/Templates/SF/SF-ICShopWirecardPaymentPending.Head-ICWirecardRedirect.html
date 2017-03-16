@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+#REM
 Shop System Plugins - Terms of use
 This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
 (subsequently referred to as WDCEE) and it's contractual partners (subsequently referred
@@ -14,25 +13,24 @@ plugin at own risk. WDCEE does not guarantee it's full functionality neither doe
 assume liability for any disadvantage related to the use of this plugin. By installing the
 plugin into the shopsystem the customer agrees to the terms of use. Please do not use this
 plugin if you do not agree to the terms of use!
--->
-<epages>
-  <Object Alias="PaymentTypes" reference="1">
-    <PaymentType
-        Alias="ICWirecard"
-        MethodClass="PaymentMethodICWirecard"
-        LineItemClass="LineItemPaymentICWirecard"
-        IsHirePurchaseSupported="0"
-        CanPaymentOnBasket="1"
-        CanPaymentOnOrder="0"
-        CanTransactionAuth="1"
-        CanTransactionCapture="1"
-        CanTransactionTest="0"
-        IsCustomerRequired="1"
-        Icon="BO/icons/icwirecard_icon_s.png"
-        DefaultImage="icwirecard.png"
-        Position="1200"
-        delete="1">
-    </PaymentType>
-  </Object>
-  <ViewAction reference="1" Path="/Classes/Shop/Actions/MBO-SearchICWirecardTransactions" PaymentType="/PaymentTypes/ICWirecard" />
-</epages>
+#ENDREM
+<noscript>
+  #REM if javascript disabled this statement ensures that all links lead to the top frame #ENDREM
+  <base target="_top" />
+</noscript>
+
+<script type="text/javascript">
+  jq.ready( function() {
+    if(window.top.location != window.location) {
+        window.top.jq('body').html(jq('body').html());
+    }
+    if (window.opener.location != window.location) {
+      window.opener.jq('body').html(jq('body').html());
+      window.close();
+    }
+  });
+</script>
+
+#REM
+it's not possible to so something like window.top.href=window.href because the original request is a post request and post data would not be included in the href
+#ENDREM

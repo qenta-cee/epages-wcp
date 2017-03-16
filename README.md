@@ -1,10 +1,10 @@
 # Wirecard Checkout Page plugin for ePages
 
 [![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://raw.githubusercontent.com/wirecard/epages-wcp/master/LICENSE)
-[![ePages](https://img.shields.io/badge/ePages-v6.15.3-green.svg)](https://www.epages.com/)
-[![ePages](https://img.shields.io/badge/ePages-v6.16.3-green.svg)](https://www.epages.com/)
+[![ePages](https://img.shields.io/badge/ePages-v7.2.0-green.svg)](https://www.epages.com/)
+[![Perl](https://img.shields.io/badge/Perl-v5.20.2-yellow.svg)](https://www.perl.org/)
 
-Wirecard Checkout Page extension for ePages. 
+Wirecard Checkout Page extension for ePages.
 
 Our [Online Guides](https://guides.wirecard.at/) provide further information on payment methods and additional features. Please observe our [terms of use](https://guides.wirecard.at/shop_plugins:info#terms_of_use) regarding plugins.
 
@@ -27,4 +27,3 @@ Wirecard Checkout Page offers:
 - Web interface for managing payments (approvals, cancelations, credits, etc.).
 - Benefit from Wirecard Bank´s license to conclude credit card acceptance contracts (acquiring) and issue credit cards.
 - With Wirecard Collecting only a single contract is required for payouts within various payment methods.
-- Support of recurring payments (subscriptions, one-click checkout).

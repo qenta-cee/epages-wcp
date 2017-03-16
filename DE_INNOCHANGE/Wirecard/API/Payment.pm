@@ -33,6 +33,8 @@ use LWP::UserAgent;
 use HTTP::Request;
 use HTTP::Request::Common qw (POST);
 use Digest::MD5 qw (md5_hex);
+use Digest::HMAC qw (hmac hmac_hex);
+use Digest::SHA qw (hmac_sha512 hmac_sha512_hex);
 use MIME::Base64 qw (encode_base64);
 use Encode qw (encode);
 
@@ -69,7 +71,14 @@ sub InitTransaction {
   Error('NO_WIRECARD', {'ObjectPath' => $pli->pathString}) unless(defined($PaymentMethod) && $PaymentMethod->instanceOf('PaymentMethodICWirecard'));
 
   my $Shop = $Container->getSite;
+  my $Locale = $Shop->siteLocale($Container->get('LocaleID'));
   my $LanguageID = $Container->get('LanguageID');
+  my $urlType = $IsMobile  ?  'mobile' : 'sf';
+  # Shopname in customerStatement must not be longer then 9 chars
+  my $customerStatement = substr $Shop->get('NameOrAlias', $LanguageID), 0, 8;
+  my $orderReference = '';
+  $orderReference .= '0' x(10 - length $Container->parent->id);
+  $orderReference .= $Container->parent->id;
   my %Params = (
     'customerId'              => $PaymentMethod->get('customerId'),
     'language'                => GetCodeByLanguageID($LanguageID),
@@ -77,26 +86,28 @@ sub InitTransaction {
     'amount'                  => $pli->get('Amount'),
     'currency'                => $pli->get('CurrencyID'),
     'orderDescription'        => Translate('ICYourOrderAt', $LanguageID, 'DE_INNOCHANGE::Wirecard') . ' ' . $Shop->get('NameOrAlias', $LanguageID),
-    'successUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentSuccessICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => 'sf/mobile'}),
-    'failureUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentFailureICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => 'sf/mobile'}),
-    'confirmUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentConfirmICWirecard', 'ViewAction' => 'SendPaymentConfirmICWirecardResponse'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => 'sf/mobile'}),
+    'customerStatement'       => $customerStatement . ' ' .$orderReference,
+    'successUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentSuccessICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
+    'failureUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentFailureICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
+    'pendingUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentPendingICWirecard'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
+    'confirmUrl'              => BuildShopUrl($Shop, {'ChangeAction' => 'PaymentConfirmICWirecard', 'ViewAction' => 'SendPaymentConfirmICWirecardResponse'}, {'UseSSL' => 1, 'UseObjectPath' => 1, 'Type' => $urlType}),
     'cancelUrl'               => BuildShopUrl($Container->parent, {}, {'UseSSL' => 1, 'UseObjectPath' => 0, 'Type' => 'sf/mobile'}), # back to basket page
     'consumerUserAgent'       => $UserAgent,
     'consumerIpAddress'       => $RemoteAddr,
-    'orderReference'          => $Container->parent->id,
+    'orderReference'          => $orderReference,
     'layout'                  => $IsMobile ? 'smartphone' : 'desktop',
-    'maxRetries'              => 2,
     'ic_paymentGUID'          => $pli->get('GUID'),
     'pluginVersion'           => _getPluginVersion()
   );
 
   # service url
   my $CustomerInfo = $Shop->get('CustomerInformation');
-  if (defined($CustomerInfo) && $CustomerInfo->get('IsVisible')) { # url to customer info page if it exists and is visible
-    $Params{'serviceUrl'} = $CustomerInfo->get('WebUrlSSL');
+
+  if (defined($PaymentMethod->get('serviceURL'))) {
+  	$Params{'serviceUrl'} = $PaymentMethod->get('serviceURL');
   }
-  else { # shop start page otherwise
-    $Params{'serviceUrl'} = $Shop->get('WebUrlSSL');
+  else {
+  	$Params{'serviceUrl'} = $Shop->get('WebUrlSSL');
   }
 
   # authorize / capture
@@ -110,25 +121,31 @@ sub InitTransaction {
   my $logoUrl = _getShopLogoUrl($Shop);
   $Params{'imageUrl'} = $logoUrl if (defined $logoUrl);
 
-  # add address data if configured
-  if ($PaymentMethod->get('sendAddressData')) {
-    my $BillingAddress = $Container->parent->get('BillingAddress');
-    my $Country = $BillingAddress->get('Country');
-    my $BirthDate = $BillingAddress->get('Birthday');
-    $Params{'consumerBillingFirstname'} = $BillingAddress->get('FirstName');
-    $Params{'consumerBillingLastname'}  = $BillingAddress->get('LastName');
-    $Params{'consumerBillingAddress1'}  = $BillingAddress->get('Street');
-    $Params{'consumerBillingAddress2'}  = '';
-    $Params{'consumerBillingCity'}      = $BillingAddress->get('City');
-    $Params{'consumerBillingCountry'}   = defined($Country)  ?  $Country->{'Code2'} : undef;
-    $Params{'consumerBillingZipCode'}   = $BillingAddress->get('Zipcode');
-    $Params{'consumerEmail'}            = $BillingAddress->get('EMail');
-    $Params{'consumerBirthDate'}        = defined($BirthDate)  ?  $BirthDate->strftime('%Y-%m-%d') : undef;
-    $Params{'consumerBillingPhone'}     = $BillingAddress->get('Phone');
-    $Params{'consumerBillingFax'}       = $BillingAddress->get('Fax');
+  # display text
+  my $displayText = $PaymentMethod->get('displayText');
+  $Params{'displayText'} = $displayText if (defined $displayText);
 
-    my $ShippingAddress = $Container->parent->get('ShippingAddress') // $BillingAddress;
-    $Country = $ShippingAddress->get('Country');
+  # consumerMerchantCrmId
+  my $BillingAddress = $Container->parent->get('BillingAddress');
+  $Params{'consumerMerchantCrmId'} = md5_hex($BillingAddress->get('EMail'));
+
+  # maxRetries
+  if (defined($PaymentMethod->get('maxRetries'))) {
+  	$Params{'maxRetries'} = $PaymentMethod->get('maxRetries');
+  }
+  else {
+  	$Params{'maxRetries'} = -1;
+  }
+
+  # duplicateRequestCheck
+  if (defined($PaymentMethod->get('duplicateRequest'))) {
+  	$Params{'duplicateRequestCheck'} = 'true';
+  }
+
+  # shippingData
+  if ($PaymentMethod->get('sendShippingData')) {
+  	my $ShippingAddress = $Container->parent->get('ShippingAddress') // $BillingAddress;
+    my $Country = $ShippingAddress->get('Country');
     my $State = $ShippingAddress->get('State');
     $State = substr($State, 0, 2) if (defined($State) && length($State) > 2);
     $Params{'consumerShippingFirstname'} = $ShippingAddress->get('FirstName');
@@ -142,6 +159,67 @@ sub InitTransaction {
     $Params{'consumerEmail'}             = $ShippingAddress->get('EMail');
     $Params{'consumerShippingPhone'}     = $ShippingAddress->get('Phone');
     $Params{'consumerShippingFax'}       = $ShippingAddress->get('Fax');
+  }
+
+  # billingData
+  if ($PaymentMethod->get('sendBillingData')) {
+  	my $BillingAddress = $Container->parent->get('BillingAddress');
+    my $Country = $BillingAddress->get('Country');
+    my $BirthDate = $BillingAddress->get('Birthday');
+    $Params{'consumerBillingFirstname'} = $BillingAddress->get('FirstName');
+    $Params{'consumerBillingLastname'}  = $BillingAddress->get('LastName');
+    $Params{'consumerBillingAddress1'}  = $BillingAddress->get('Street');
+    $Params{'consumerBillingAddress2'}  = '';
+    $Params{'consumerBillingCity'}      = $BillingAddress->get('City');
+    $Params{'consumerBillingCountry'}   = defined($Country)  ?  $Country->{'Code2'} : undef;
+    $Params{'consumerBillingZipCode'}   = $BillingAddress->get('Zipcode');
+    $Params{'consumerEmail'}            = $BillingAddress->get('EMail');
+    $Params{'consumerBirthDate'}        = defined($BirthDate)  ?  $BirthDate->strftime('%Y-%m-%d') : undef;
+    $Params{'consumerBillingPhone'}     = $BillingAddress->get('Phone');
+    $Params{'consumerBillingFax'}       = $BillingAddress->get('Fax');
+  }
+
+  # basketData
+  if ($PaymentMethod->get('sendBasketData')) {
+    # get all Line Items
+    my $LineItems = $Container->get('Positions');
+    my $LineItem;
+    my $count = 0;
+    foreach $LineItem (@$LineItems) {
+      my $TaxRate = $LineItem->get('TaxRate') * 100;
+      if ($count == 0) {
+        # first LineItem is Paymentmethod (Wirecard)
+        $count++;
+      }
+      elsif (defined $LineItem->get('BasePrice') && defined $LineItem->get('Quantity')) {
+        # do not include other LineItems then products
+        # BasePrice is unit price
+        my $TaxAmount = $Locale->roundMoney($LineItem->get('BasePrice') / (100 + $TaxRate) * $TaxRate, $pli->get('CurrencyID'));
+        my $NetAmount = $Locale->roundMoney($LineItem->get('BasePrice') - $TaxAmount, $pli->get('CurrencyID'));
+        $Params{'basketItem'. $count .'name'} = $LineItem->get('Name');
+        $Params{'basketItem'. $count .'articleNumber'} = $LineItem->get('Name');
+        $Params{'basketItem'. $count .'quantity'} = $LineItem->get('Quantity');
+        $Params{'basketItem'. $count .'unitGrossAmount'} = $Locale->roundMoney($LineItem->get('BasePrice'), $pli->get('CurrencyID'));
+        $Params{'basketItem'. $count .'unitNetAmount'} = $NetAmount;
+        $Params{'basketItem'. $count .'unitTaxAmount'} = $TaxAmount;
+        $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
+        $count++;
+      }
+      elsif (defined $LineItem->get('Quantity')) {
+        # shipping
+        my $TaxAmount = $Locale->roundMoney($LineItem->get('LineItemPrice') / (100 + $TaxRate) * $TaxRate, $pli->get('CurrencyID'));
+        my $NetAmount = $Locale->roundMoney($LineItem->get('LineItemPrice') - $TaxAmount, $pli->get('CurrencyID'));
+        $Params{'basketItem'. $count .'name'} = $LineItem->get('Name');
+        $Params{'basketItem'. $count .'articleNumber'} = 'Shipping';
+        $Params{'basketItem'. $count .'quantity'} = $LineItem->get('Quantity');
+        $Params{'basketItem'. $count .'unitGrossAmount'} = $Locale->roundMoney($LineItem->get('LineItemPrice'), $pli->get('CurrencyID'));
+        $Params{'basketItem'. $count .'unitNetAmount'} = $NetAmount;
+        $Params{'basketItem'. $count .'unitTaxAmount'} = $TaxAmount;
+        $Params{'basketItem'. $count .'unitTaxRate'} = $LineItem->get('TaxRate');
+        $count++;
+      }
+    }
+    $Params{'basketItems'} = $count - 1;
   }
 
   # calculate finger print
@@ -177,7 +255,7 @@ sub InitTransaction {
 #----------------------------------------------------------------------------------------
 # §syntax       $fingerprint = CalculateFingerprint($secret, $fingerPrintOrder, $hData);
 #----------------------------------------------------------------------------------------
-# §description  calculate an md5 fingerprint
+# §description  calculate an hmac_sha512 fingerprint
 #----------------------------------------------------------------------------------------
 # §input        $secret | payment method's secret | string
 # §input        $fingerPrintOrder | comma separated list of hash keys (and secret) specifing the order of values to use for hash calculation | string
@@ -191,7 +269,7 @@ sub CalculateFingerprint {
   foreach my $key (split(/,/, $fingerPrintOrder)) {
     $hashInput .= $key eq 'secret'  ?  $secret : encode('utf-8', $hData->{$key} // '');
   }
-  return md5_hex($hashInput);
+  return hmac_sha512_hex($hashInput, $secret);
 }
 
 #========================================================================================
@@ -241,7 +319,7 @@ sub _getPluginVersion {
     LoadRootObject()->get('EpagesVersion'),   # version of shop system
     '',                                       # dependecies
     'epages_wcp',                             # plugin name
-    '2.0.1'                                   # plugin version
+    '2.1.0'                                   # plugin version
   );
   return encode_base64($pluginVersion, '');
 }

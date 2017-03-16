@@ -23,5 +23,13 @@ plugin if you do not agree to the terms of use!
     <Object Path="/Classes/System/Attributes/ICWirecard_InitTransactionURL">
       <Attribute Name="Name">URL for Wirecard payment system</Attribute>
     </Object>
+    <Object Path="/Classes/System/Attributes/ICWirecard_MerchantRegisterURL">
+      <Attribute Name="Name">Wirecard register URL</Attribute>
+      <Attribute Name="Description">If this value is defined, a link to this address is shown on the MBO settings page.</Attribute>
+    </Object>
+    <Object Path="/Classes/System/Attributes/ICWirecard_GeneralInformationURL">
+      <Attribute Name="Name">Wirecard general information for shop plugins URL</Attribute>
+      <Attribute Name="Description">If this value is defined, a link to this address is shown on the MBO settings page.</Attribute>
+    </Object>
   </Language>
 </epages>
