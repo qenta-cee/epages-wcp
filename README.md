@@ -1,7 +1,7 @@
 # Wirecard Checkout Page plugin for ePages
 
 [![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://raw.githubusercontent.com/wirecard/epages-wcp/master/LICENSE)
-[![ePages](https://img.shields.io/badge/ePages-v6.17.56-green.svg)](https://www.epages.com/)
+[![ePages](https://img.shields.io/badge/ePages-v7.2.0-green.svg)](https://www.epages.com/)
 [![Perl](https://img.shields.io/badge/Perl-v5.20.2-yellow.svg)](https://www.perl.org/)
 
 Wirecard Checkout Page extension for ePages.
