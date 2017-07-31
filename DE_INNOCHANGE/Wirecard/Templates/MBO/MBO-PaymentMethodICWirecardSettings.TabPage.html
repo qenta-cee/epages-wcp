@@ -229,11 +229,12 @@ plugin if you do not agree to the terms of use!
 
     <tr#IF(#FormError_InstallmentProvider) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">{ICInstallmentProvider}</td>
-      <td><input type="text" name="InstallmentProvider" value="#InstallmentProvider" class="TextHalfSize ep-js" data-js="ep.uiInput()" />
-          <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
-          <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
-          {ICBubbleHelpInstallmentProvider}
-        </span>
+      <td>
+        <select class="Text ep-js" data-js="ep.uiInput()" name="InstallmentProvider">
+          #LOOP(#WC_INSTALLMENT_PROVIDER)
+          <option value="#ID"#IF(#ID EQ #InstallmentProvider) selected="selected"#ENDIF>#Name</option>
+          #ENDLOOP
+        </select>
       </td>
 
     </tr>
