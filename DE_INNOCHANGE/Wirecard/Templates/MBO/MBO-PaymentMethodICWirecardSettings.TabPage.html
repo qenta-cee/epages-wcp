@@ -27,6 +27,14 @@ plugin if you do not agree to the terms of use!
   </div>
 #ENDIF
 
+#IF(#paymentType EQ #WC_PAYMENT_TYPE_INSTALLMENT AND NOT("Birthday" IN #Shop.BillingAddressSetMandatoryFields))
+  <div class="DialogMessage MessageWarning">
+    <h3>{Attention}</h3>
+    {ICMakeBirthdayMandatory}
+    <a class="DialogAction" href="?ObjectID=#Shop.ID&amp;ViewAction=MBO-ViewRegistrationSet">{ICEditRegistrationSet}</a>
+  </div>
+#ENDIF
+
 #IF(#FormError)
   <div class="DialogMessage MessageWarning" id="MessageWarning">
     <h3>{InputError}</h3>
