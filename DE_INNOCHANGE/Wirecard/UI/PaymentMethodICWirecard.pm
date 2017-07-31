@@ -27,6 +27,8 @@ use strict;
 use DE_EPAGES::Object::API::Factory qw (LoadClassByAlias);
 use DE_EPAGES::Order::API::Constants qw (ORDER_STATUS_ATTRIBUTES);
 use DE_INNOCHANGE::Wirecard::API::Constants qw (
+  %WC_INVOICE_PROVIDER
+  %WC_INSTALLMENT_PROVIDER
   %WC_PAYMENT_TYPES
   WC_PAYMENT_TYPE_INVOICE
   WC_PAYMENT_TYPE_INSTALLMENT
@@ -51,6 +53,8 @@ sub ViewSettings {
   $Servlet->vars('WC_PAYMENT_TYPE_INVOICE', WC_PAYMENT_TYPE_INVOICE);
   $Servlet->vars('WC_PAYMENT_TYPE_INSTALLMENT', WC_PAYMENT_TYPE_INSTALLMENT);
   $Servlet->vars('WC_PAYMENT_TYPES', [map { {'ID' => $_, 'Name' => $WC_PAYMENT_TYPES{$_}} } sort keys %WC_PAYMENT_TYPES]);
+  $Servlet->vars('WC_INVOICE_PROVIDER', [map { {'ID' => $_, 'Name' => $WC_INVOICE_PROVIDER{$_}} } sort keys %WC_INVOICE_PROVIDER]);
+  $Servlet->vars('WC_INSTALLMENT_PROVIDER', [map { {'ID' => $_, 'Name' => $WC_INSTALLMENT_PROVIDER{$_}} } sort keys %WC_INSTALLMENT_PROVIDER]);
 
   # order status
   my $OrderClass = LoadClassByAlias('CustomerOrder');

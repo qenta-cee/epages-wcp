@@ -35,6 +35,8 @@ our @EXPORT_OK = qw (
   WC_PAYMENT_TYPE_INSTALLMENT
   WC_PAYMENT_TYPE_SELECT
   %WC_PAYMENT_TYPES
+  %WC_INVOICE_PROVIDER
+  %WC_INSTALLMENT_PROVIDER
 );
 
 use constant WC_PAYMENT_TYPE_SELECT  => 'SELECT';
@@ -63,6 +65,17 @@ our %WC_PAYMENT_TYPES = (
   'SKRILLWALLET'          => 'Skrill Digital Wallet',
   'SOFORTUEBERWEISUNG'    => 'sofort.com',
   'TRUSTLY'               => 'Trustly'
+);
+
+our %WC_INVOICE_PROVIDER = (
+  'PAYOLUTION'           => 'payolution',
+  'RATEPAY'              => 'RatePay',
+  'WIRECARD'             => 'Wirecard'
+);
+
+our %WC_INSTALLMENT_PROVIDER = (
+    'PAYOLUTION'           => 'payolution',
+    'RATEPAY'              => 'RatePay'
 );
 
 use constant TRANS_TYPE_AUTHORIZED => 'authorized';
