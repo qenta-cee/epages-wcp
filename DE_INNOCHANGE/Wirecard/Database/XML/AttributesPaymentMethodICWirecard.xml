@@ -35,6 +35,7 @@ plugin if you do not agree to the terms of use!
         <Attribute Alias="duplicateRequest"      Type="Boolean" IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
         <Attribute Alias="displayType"           Type="Integer" IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
         <Attribute Alias="InvoiceProvider"       Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
+        <Attribute Alias="InstallmentProvider"   Type="String"  IsExportable="1" ExportLevel="1" IsCacheable="1" Package="DE_EPAGES::Object::API::Attributes::DefaultAttribute" />
       </Object>
     </Class>
   </Object>

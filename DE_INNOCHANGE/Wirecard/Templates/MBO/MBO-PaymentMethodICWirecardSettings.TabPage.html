@@ -205,8 +205,9 @@ plugin if you do not agree to the terms of use!
         </span>
     </td>
 
-      </tr>
-      <tr#IF(#FormError_InvoiceProvider) class="DialogError"#ENDIF>
+    </tr>
+
+    <tr#IF(#FormError_InvoiceProvider) class="DialogError"#ENDIF>
       <td class="InputLabellingWide PaddingLeft">{ICInvoiceProvider}</td>
       <td><input type="text" name="InvoiceProvider" value="#InvoiceProvider" class="TextHalfSize ep-js" data-js="ep.uiInput()" />
           <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
@@ -216,6 +217,18 @@ plugin if you do not agree to the terms of use!
       </td>
 
     </tr>
+
+    <tr#IF(#FormError_InstallmentProvider) class="DialogError"#ENDIF>
+      <td class="InputLabellingWide PaddingLeft">{ICInstallmentProvider}</td>
+      <td><input type="text" name="InstallmentProvider" value="#InstallmentProvider" class="TextHalfSize ep-js" data-js="ep.uiInput()" />
+          <img src="#System.StoreRoot/BO/icons/ico_s_bubblehelp.png" alt="" class="BubbleHelp" />
+          <span class="Tooltip ep-js"  data-js="ep.uiTooltip({})">
+          {ICBubbleHelpInstallmentProvider}
+        </span>
+      </td>
+
+    </tr>
+
     <tr#IF(#FormError_duplicateRequest) class="DialogError"#ENDIF>
     <td class="InputLabellingWide PaddingLeft">{ICduplicateRequest}</td>
     <td>
