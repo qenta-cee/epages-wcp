@@ -45,6 +45,8 @@ plugin if you do not agree to the terms of use!
     <Translation Keyword="ICEditRegistrationSet">Edit form fields in the billing address</Translation>
     <Translation Keyword="ICMakeBirthdayMandatory">To make a payment using invoice, customers must specify the birthday in the billing address. For this reason mark this form field as a required field.</Translation>
     <Translation Keyword="ICBubbleHelpTransactionTypeAuthorize">The amount will be reserved. You must perform the debit on the Wirecard administration page yourself.</Translation>
+    <Translation Keyword="ICInvoiceProvider">Invoice provider</Translation>
+    <Translation Keyword="ICBubbleHelpInvoiceProvider">Choose your Invoice provider</Translation>
     <Translation Keyword="Info0">Registration at Wirecard</Translation>
     <Translation Keyword="Info1">If you do not have a Wirecard merchant account yet, please register to create one!</Translation>
     <Translation Keyword="RegisterURL">Register at Wirecard</Translation>
