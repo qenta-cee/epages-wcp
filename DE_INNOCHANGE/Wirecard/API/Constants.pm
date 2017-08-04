@@ -64,7 +64,8 @@ our %WC_PAYMENT_TYPES = (
   'QUICK'                 => 'Quick',
   'SKRILLWALLET'          => 'Skrill Digital Wallet',
   'SOFORTUEBERWEISUNG'    => 'sofort.com',
-  'TRUSTLY'               => 'Trustly'
+  'TRUSTLY'               => 'Trustly',
+  'MASTERPASS'            => 'Masterpass'
 );
 
 our %WC_INVOICE_PROVIDER = (
