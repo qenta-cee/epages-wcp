@@ -92,7 +92,6 @@ sub canAddToBasket {
     my $Basket = $hVars->{'LineItemContainer'}->parent;
     my $ShippingAddress = $Basket->get('ShippingAddress');
     my $BillingAddress = $Basket->get('BillingAddress');
-    return 0 if (defined($ShippingAddress) && defined($BillingAddress) && $ShippingAddress->id != $BillingAddress->id);
 
     # check age of customer if known
     if (defined $BillingAddress) {
@@ -112,7 +111,6 @@ sub canAddToBasket {
     my $Basket = $hVars->{'LineItemContainer'}->parent;
     my $ShippingAddress = $Basket->get('ShippingAddress');
     my $BillingAddress = $Basket->get('BillingAddress');
-    return 0 if (defined($ShippingAddress) && defined($BillingAddress) && $ShippingAddress->id != $BillingAddress->id);
 
     # check age of customer if known
     if (defined $BillingAddress) {
