@@ -103,7 +103,7 @@ sub InitTransaction {
   # service url
   my $CustomerInfo = $Shop->get('CustomerInformation');
 
-  if ($PaymentMethod->get('paymentType') == 'MASTERPASS') {
+  if ($PaymentMethod->get('paymentType') eq 'MASTERPASS') {
     $Params{'shippingProfile'} = 'NO_SHIPPING';
   }
 
