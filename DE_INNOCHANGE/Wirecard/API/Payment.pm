@@ -185,8 +185,8 @@ sub InitTransaction {
 
   # basketData
   if ($PaymentMethod->get('sendBasketData')
-      || ($PaymentMethod->get('paymentType') == 'INVOICE' && $PaymentMethod->get('InvoiceProvider') != 'PAYOLUTION' )
-      || ($PaymentMethod->get('paymentType') == 'INSTALLMENT' && $PaymentMethod->get('InstallmentProvider') != 'PAYOLUTION' )
+      || ($PaymentMethod->get('paymentType') eq 'INVOICE' && $PaymentMethod->get('InvoiceProvider') ne 'PAYOLUTION' )
+      || ($PaymentMethod->get('paymentType') eq 'INSTALLMENT' && $PaymentMethod->get('InstallmentProvider') ne 'PAYOLUTION' )
   ) {
     # get all Line Items
     my $LineItems = $Container->get('Positions');
