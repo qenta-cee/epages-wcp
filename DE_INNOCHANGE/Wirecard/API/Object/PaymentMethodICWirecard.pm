@@ -27,6 +27,7 @@ use strict;
 use DE_EPAGES::Core::API::PerlTools qw (SubtractDuration);
 use DE_EPAGES::Database::API::Connection qw (GetCurrentDBHandle);
 use DE_INNOCHANGE::Wirecard::API::Constants qw (WC_PAYMENT_TYPE_INVOICE);
+use DE_INNOCHANGE::Wirecard::API::Constants qw (WC_PAYMENT_TYPE_INSTALLMENT);
 
 #========================================================================================
 # §function     featureName
@@ -91,7 +92,25 @@ sub canAddToBasket {
     my $Basket = $hVars->{'LineItemContainer'}->parent;
     my $ShippingAddress = $Basket->get('ShippingAddress');
     my $BillingAddress = $Basket->get('BillingAddress');
-    return 0 if (defined($ShippingAddress) && defined($BillingAddress) && $ShippingAddress->id != $BillingAddress->id);
+
+    # check age of customer if known
+    if (defined $BillingAddress) {
+      my $Birthday = $BillingAddress->get('Birthday');
+      if (defined $Birthday) {
+        my $maxBirthday = GetCurrentDBHandle()->currentDateTime;
+        SubtractDuration($maxBirthday, 'years', 18);
+        return 0 if ($Birthday > $maxBirthday);
+      }
+    }
+  }
+  if (defined($paymentType) && $paymentType eq WC_PAYMENT_TYPE_INSTALLMENT) {
+    # check currency
+    return 0 unless ($hVars->{'CurrencyID'} eq 'EUR');
+
+    # no shipping address is allowed
+    my $Basket = $hVars->{'LineItemContainer'}->parent;
+    my $ShippingAddress = $Basket->get('ShippingAddress');
+    my $BillingAddress = $Basket->get('BillingAddress');
 
     # check age of customer if known
     if (defined $BillingAddress) {

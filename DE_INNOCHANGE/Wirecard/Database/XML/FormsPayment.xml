@@ -33,6 +33,8 @@ plugin if you do not agree to the terms of use!
       <FormField Name="displayType"           Type="boolean" Mandatory="1" />
       <FormField Name="OrderStatusAuthorized" Type="string" />
       <FormField Name="OrderStatusSettled"    Type="string" />
+      <FormField Name="InvoiceProvider"       Type="string" />
+      <FormField Name="InstallmentProvider"   Type="string" />
     </Form>
   </Class>
 </epages>

@@ -32,24 +32,28 @@ our @EXPORT_OK = qw (
   TRANS_TYPE_DECLINED
   TRANS_TYPE_SETTLED
   WC_PAYMENT_TYPE_INVOICE
+  WC_PAYMENT_TYPE_INSTALLMENT
   WC_PAYMENT_TYPE_SELECT
   %WC_PAYMENT_TYPES
+  %WC_INVOICE_PROVIDER
+  %WC_INSTALLMENT_PROVIDER
 );
 
 use constant WC_PAYMENT_TYPE_SELECT  => 'SELECT';
 use constant WC_PAYMENT_TYPE_INVOICE => 'INVOICE';
+use constant WC_PAYMENT_TYPE_INSTALLMENT => 'INSTALLMENT';
 
 our %WC_PAYMENT_TYPES = (
   #'SELECT'                => '',
-  'BANCONTACT_MISTERCASH' => 'Bancontact/Mister Cash',
+  'BANCONTACT_MISTERCASH' => 'Bancontact',
   'CCARD'                 => 'Credit Card',
   'EKONTO'                => 'eKonto',
   'SEPA-DD'               => 'SEPA Direct Debit',
   'EPS'                   => 'EPS e-payment',
   'GIROPAY'               => 'giropay',
   'IDL'                   => 'iDEAL',
-  'INSTALLMENT'           => 'Installment by payolution or RatePAY',
-  'INVOICE'               => 'Invoice by payolution or RatePAY',
+  'INSTALLMENT'           => 'Installment',
+  'INVOICE'               => 'Invoice',
   'MAESTRO'               => 'Maestro SecureCode',
   'MONETA'                => 'moneta.ru',
   'PRZELEWY24'            => 'Przelewy24',
@@ -60,7 +64,19 @@ our %WC_PAYMENT_TYPES = (
   'QUICK'                 => 'Quick',
   'SKRILLWALLET'          => 'Skrill Digital Wallet',
   'SOFORTUEBERWEISUNG'    => 'sofort.com',
-  'TRUSTLY'               => 'Trustly'
+  'TRUSTLY'               => 'Trustly',
+  'MASTERPASS'            => 'Masterpass'
+);
+
+our %WC_INVOICE_PROVIDER = (
+  'PAYOLUTION'           => 'payolution',
+  'RATEPAY'              => 'RatePay',
+  'WIRECARD'             => 'Wirecard'
+);
+
+our %WC_INSTALLMENT_PROVIDER = (
+    'PAYOLUTION'           => 'payolution',
+    'RATEPAY'              => 'RatePay'
 );
 
 use constant TRANS_TYPE_AUTHORIZED => 'authorized';

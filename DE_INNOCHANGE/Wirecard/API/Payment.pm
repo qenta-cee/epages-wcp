@@ -103,6 +103,10 @@ sub InitTransaction {
   # service url
   my $CustomerInfo = $Shop->get('CustomerInformation');
 
+  if ($PaymentMethod->get('paymentType') eq 'MASTERPASS') {
+    $Params{'shippingProfile'} = 'NO_SHIPPING';
+  }
+
   if (defined($PaymentMethod->get('serviceURL'))) {
   	$Params{'serviceUrl'} = $PaymentMethod->get('serviceURL');
   }
@@ -180,7 +184,10 @@ sub InitTransaction {
   }
 
   # basketData
-  if ($PaymentMethod->get('sendBasketData')) {
+  if ($PaymentMethod->get('sendBasketData')
+      || ($PaymentMethod->get('paymentType') eq 'INVOICE' && $PaymentMethod->get('InvoiceProvider') ne 'PAYOLUTION' )
+      || ($PaymentMethod->get('paymentType') eq 'INSTALLMENT' && $PaymentMethod->get('InstallmentProvider') ne 'PAYOLUTION' )
+  ) {
     # get all Line Items
     my $LineItems = $Container->get('Positions');
     my $LineItem;
@@ -319,7 +326,7 @@ sub _getPluginVersion {
     LoadRootObject()->get('EpagesVersion'),   # version of shop system
     '',                                       # dependecies
     'epages_wcp',                             # plugin name
-    '2.1.0'                                   # plugin version
+    '2.2.0'                                   # plugin version
   );
   return encode_base64($pluginVersion, '');
 }

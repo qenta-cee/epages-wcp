@@ -45,6 +45,10 @@ plugin if you do not agree to the terms of use!
     <Translation Keyword="ICEditRegistrationSet">Formularfelder der Rechnungsadresse bearbeiten</Translation>
     <Translation Keyword="ICMakeBirthdayMandatory">Für die Bezahlung mit Rechnung ist es erforderlich, dass Kunden in der Rechnungsadresse den Geburtstag angeben. Markieren Sie daher dieses Formularfeld als erforderlich.</Translation>
     <Translation Keyword="ICBubbleHelpTransactionTypeAuthorize">Der Betrag wird reserviert. Die Abbuchung müssen Sie in der Wirecard-Administration selbst auslösen.</Translation>
+    <Translation Keyword="ICInvoiceProvider">Provider für Kauf auf Rechnung</Translation>
+    <Translation Keyword="ICBubbleHelpInvoiceProvider">Wählen Sie Ihren Provider für Kauf auf Rechnung</Translation>
+    <Translation Keyword="ICInstallmentProvider">Provider für Kauf auf Raten</Translation>
+    <Translation Keyword="ICBubbleHelpInstallmentProvider">Wählen Sie Ihren Provider für Kauf auf Raten</Translation>
     <Translation Keyword="Info0">Registrierung bei Wirecard</Translation>
     <Translation Keyword="Info1">Falls sie noch nicht über ein Wirecard-Konto verfügen, melden Sie sich bitte bei Wirecard an!</Translation>
     <Translation Keyword="RegisterURL">Jetzt bei Wirecard anmelden</Translation>

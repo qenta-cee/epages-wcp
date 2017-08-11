@@ -1,9 +1,9 @@
 #========================================================================================
-# ï¿½package      DE_INNOCHANGE::Wirecard::UI::PaymentMethodICWirecard
-# ï¿½base         DE_EPAGES::Payment::UI::PaymentMethod
-# ï¿½state        public
+# §package      DE_INNOCHANGE::Wirecard::UI::PaymentMethodICWirecard
+# §base         DE_EPAGES::Payment::UI::PaymentMethod
+# §state        public
 #----------------------------------------------------------------------------------------
-# ï¿½description  UI functions for class PaymentMethodICWirecard
+# §description  UI functions for class PaymentMethodICWirecard
 #
 # Shop System Plugins - Terms of use
 # This terms of use regulates warranty and liability between Wirecard Central Eastern Europe
@@ -27,20 +27,23 @@ use strict;
 use DE_EPAGES::Object::API::Factory qw (LoadClassByAlias);
 use DE_EPAGES::Order::API::Constants qw (ORDER_STATUS_ATTRIBUTES);
 use DE_INNOCHANGE::Wirecard::API::Constants qw (
+  %WC_INVOICE_PROVIDER
+  %WC_INSTALLMENT_PROVIDER
   %WC_PAYMENT_TYPES
   WC_PAYMENT_TYPE_INVOICE
+  WC_PAYMENT_TYPE_INSTALLMENT
   WC_PAYMENT_TYPE_SELECT
 );
 
 #========================================================================================
-# ï¿½function     ViewSettings
-# ï¿½state        public
+# §function     ViewSettings
+# §state        public
 #----------------------------------------------------------------------------------------
-# ï¿½syntax       $Package->ViewSettings($Servlet);
+# §syntax       $Package->ViewSettings($Servlet);
 #----------------------------------------------------------------------------------------
-# ï¿½description  view payment method settings page
+# §description  view payment method settings page
 #----------------------------------------------------------------------------------------
-# ï¿½input        $Servlet | servlet | object
+# §input        $Servlet | servlet | object
 #========================================================================================
 sub ViewSettings {
   my $self = shift;
@@ -48,7 +51,10 @@ sub ViewSettings {
 
   $Servlet->vars('WC_PAYMENT_TYPE_SELECT', WC_PAYMENT_TYPE_SELECT);
   $Servlet->vars('WC_PAYMENT_TYPE_INVOICE', WC_PAYMENT_TYPE_INVOICE);
+  $Servlet->vars('WC_PAYMENT_TYPE_INSTALLMENT', WC_PAYMENT_TYPE_INSTALLMENT);
   $Servlet->vars('WC_PAYMENT_TYPES', [map { {'ID' => $_, 'Name' => $WC_PAYMENT_TYPES{$_}} } sort keys %WC_PAYMENT_TYPES]);
+  $Servlet->vars('WC_INVOICE_PROVIDER', [map { {'ID' => $_, 'Name' => $WC_INVOICE_PROVIDER{$_}} } sort keys %WC_INVOICE_PROVIDER]);
+  $Servlet->vars('WC_INSTALLMENT_PROVIDER', [map { {'ID' => $_, 'Name' => $WC_INSTALLMENT_PROVIDER{$_}} } sort keys %WC_INSTALLMENT_PROVIDER]);
 
   # order status
   my $OrderClass = LoadClassByAlias('CustomerOrder');
@@ -58,14 +64,14 @@ sub ViewSettings {
 }
 
 #========================================================================================
-# ï¿½function     SaveSettings
-# ï¿½state        public
+# §function     SaveSettings
+# §state        public
 #----------------------------------------------------------------------------------------
-# ï¿½syntax       $Package->SaveSettings($Servlet);
+# §syntax       $Package->SaveSettings($Servlet);
 #----------------------------------------------------------------------------------------
-# ï¿½description  save the payment method settings
+# §description  save the payment method settings
 #----------------------------------------------------------------------------------------
-# ï¿½input        $Servlet | servlet | object
+# §input        $Servlet | servlet | object
 #========================================================================================
 sub SaveSettings {
   my $self = shift;
@@ -89,6 +95,10 @@ sub SaveSettings {
   # set sendAddressData to 1 if payment type is invoice
   my $PaymentMethod = $Servlet->object;
   if ($PaymentMethod->get('paymentType') eq WC_PAYMENT_TYPE_INVOICE) {
+    $PaymentMethod->set({'sendBillingData' => 1});
+    $PaymentMethod->set({'sendShippingData' => 1});
+  }
+  if ($PaymentMethod->get('paymentType') eq WC_PAYMENT_TYPE_INSTALLMENT) {
     $PaymentMethod->set({'sendBillingData' => 1});
     $PaymentMethod->set({'sendShippingData' => 1});
   }

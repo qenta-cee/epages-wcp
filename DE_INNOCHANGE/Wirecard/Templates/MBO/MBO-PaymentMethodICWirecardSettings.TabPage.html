@@ -27,6 +27,14 @@ plugin if you do not agree to the terms of use!
   </div>
 #ENDIF
 
+#IF(#paymentType EQ #WC_PAYMENT_TYPE_INSTALLMENT AND NOT("Birthday" IN #Shop.BillingAddressSetMandatoryFields))
+  <div class="DialogMessage MessageWarning">
+    <h3>{Attention}</h3>
+    {ICMakeBirthdayMandatory}
+    <a class="DialogAction" href="?ObjectID=#Shop.ID&amp;ViewAction=MBO-ViewRegistrationSet">{ICEditRegistrationSet}</a>
+  </div>
+#ENDIF
+
 #IF(#FormError)
   <div class="DialogMessage MessageWarning" id="MessageWarning">
     <h3>{InputError}</h3>
@@ -206,6 +214,31 @@ plugin if you do not agree to the terms of use!
     </td>
 
     </tr>
+
+    <tr#IF(#FormError_InvoiceProvider) class="DialogError"#ENDIF>
+      <td class="InputLabellingWide PaddingLeft">{ICInvoiceProvider}</td>
+      <td>
+        <select class="Text ep-js" data-js="ep.uiInput()" name="InvoiceProvider">
+          #LOOP(#WC_INVOICE_PROVIDER)
+          <option value="#ID"#IF(#ID EQ #InvoiceProvider) selected="selected"#ENDIF>#Name</option>
+          #ENDLOOP
+        </select>
+      </td>
+
+    </tr>
+
+    <tr#IF(#FormError_InstallmentProvider) class="DialogError"#ENDIF>
+      <td class="InputLabellingWide PaddingLeft">{ICInstallmentProvider}</td>
+      <td>
+        <select class="Text ep-js" data-js="ep.uiInput()" name="InstallmentProvider">
+          #LOOP(#WC_INSTALLMENT_PROVIDER)
+          <option value="#ID"#IF(#ID EQ #InstallmentProvider) selected="selected"#ENDIF>#Name</option>
+          #ENDLOOP
+        </select>
+      </td>
+
+    </tr>
+
     <tr#IF(#FormError_duplicateRequest) class="DialogError"#ENDIF>
     <td class="InputLabellingWide PaddingLeft">{ICduplicateRequest}</td>
     <td>
