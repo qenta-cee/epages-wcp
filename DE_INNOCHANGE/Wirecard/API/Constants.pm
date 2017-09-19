@@ -68,15 +68,13 @@ our %WC_PAYMENT_TYPES = (
   'MASTERPASS'            => 'Masterpass'
 );
 
+# Ratepay/Wirecard not yet included due to consumerDeviceId
 our %WC_INVOICE_PROVIDER = (
-  'PAYOLUTION'           => 'payolution',
-  'RATEPAY'              => 'RatePay',
-  'WIRECARD'             => 'Wirecard'
+  'PAYOLUTION'           => 'payolution'
 );
 
 our %WC_INSTALLMENT_PROVIDER = (
-    'PAYOLUTION'           => 'payolution',
-    'RATEPAY'              => 'RatePay'
+    'PAYOLUTION'           => 'payolution'
 );
 
 use constant TRANS_TYPE_AUTHORIZED => 'authorized';
