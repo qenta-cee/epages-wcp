@@ -63,7 +63,7 @@ our %WC_PAYMENT_TYPES = (
   'PSC'                   => 'Paysafecard',
   'QUICK'                 => 'Quick',
   'SKRILLWALLET'          => 'Skrill Digital Wallet',
-  'SOFORTUEBERWEISUNG'    => 'sofort.com',
+  'SOFORTUEBERWEISUNG'    => 'Online bank transfer.',
   'TRUSTLY'               => 'Trustly',
   'MASTERPASS'            => 'Masterpass'
 );
