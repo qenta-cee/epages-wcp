@@ -326,7 +326,7 @@ sub _getPluginVersion {
     LoadRootObject()->get('EpagesVersion'),   # version of shop system
     '',                                       # dependecies
     'epages_wcp',                             # plugin name
-    '2.3.0'                                   # plugin version
+    '2.3.1'                                   # plugin version
   );
   return encode_base64($pluginVersion, '');
 }
