@@ -4,6 +4,14 @@
 [![ePages](https://img.shields.io/badge/ePages-v7.2.0-green.svg)](https://www.epages.com/)
 [![Perl](https://img.shields.io/badge/Perl-v5.20.2-yellow.svg)](https://www.perl.org/)
 
+----
+**IMPORTANT INFORMATION**  
+You are visiting a shop extension which will become obsolete in the near future and will not be continued.  
+Please take a look at [our online documentation](https://doc.wirecard.com), which describes in more detail how to integrate the Wirecard Payment Gateway into your online shop.  
+If you have any questions, please contact shop-systems-support@wirecard.com  
+
+----
+
 Wirecard Checkout Page extension for ePages.
 
 Our [Online Guides](https://guides.wirecard.at/) provide further information on payment methods and additional features. Please observe our [terms of use](https://guides.wirecard.at/shop_plugins:info#terms_of_use) regarding plugins.
